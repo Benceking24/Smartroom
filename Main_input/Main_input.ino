@@ -45,6 +45,9 @@ int Frontyard_Motion_Interval;
 const char* ssid = "kibu-guest";
 const char* password = "raday30";
 const char* mqtt_server = "192.168.1.20";
+const int mqttPort = 1883;
+const char* mqttUser = "Smartroom";
+const char* mqttPassword = "kibu";
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
@@ -52,9 +55,7 @@ long lastMsg = 0;
 char msg[50];
 int value = 0;
 
-void GetIntervals(){
-  client.Subscribe
-}
+//void GetIntervals(){}
 
 //======  Wifi  ======//
 void setup_wifi() {
@@ -116,7 +117,7 @@ void Livingroom_Motiom()*/
 
 void setup() {
   setup_wifi();
-  //client.setServer(mqtt_server,1883);
+  //client.setServer(mqtt_server,mqttPort);
   //client.setCallback(callback);
 }
 

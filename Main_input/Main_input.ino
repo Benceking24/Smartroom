@@ -1,10 +1,11 @@
 #include<ESP8266WiFi.h>
 #include<PubSubClient.h>
 #include<DHT.h>
+#define DHTTYPE DHT22
 
 //======  Nappali változók  ======//
 int Livingroom_Temperature;
-int Livingroom_Humidity;
+float Livingroom_Humidity;
 bool Livingroom_Ambient;
 bool Livingroom_Smoke;
 bool Livingroom_Motion;
@@ -36,8 +37,8 @@ int Frontyard_Motion_Interval;
 #define Frontyard_Ambient_PIN 5   // D6 12
 #define Frontyard_Motion_PIN 13   // D7 13
 #define Frontyard_Dumpster_PIN 15 // D8 15
-                                  // RX 3
-                                  // TX 1
+// RX 3
+// TX 1
 #define Frontyard_Grass_PIN 9     // SD2 9
 #define Frontyard_Rain_PIN 10     // SD3 10
 
@@ -49,10 +50,11 @@ const int mqttPort = 1883;
 const char* mqttUser = "Smartroom";
 const char* mqttPassword = "kibu";
 
+DHT dht(Livingroom_TempHum_PIN,DHTTYPE);
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 long lastMsg = 0;
-char msg[50];
+char* msg;
 int value = 0;
 
 //void GetIntervals(){}
@@ -79,13 +81,38 @@ void setup_wifi() {
 
 //======  MQTT Callback  ======//
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
-  for (int i = 0; i < length; i++) {
+  /* DEBUG MODE
+    Serial.print("Message arrived [");
+    Serial.print(topic);
+    Serial.print("] ");
+    for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
+    }
+    Serial.println();*/
+
+  payload[length] = '\0';
+  String strTopic = String((char*)topic);
+  msg = (char*)payload;
+
+  if(strTopic == "Config/Intervals"){
+        /*Tömböt nem tudok mqtt-n küldeni csak kódolással és dekódolással
+         *Adat folyam falytája? 
+        Livingroom_Temperature_Interval;
+        Livingroom_Humidity_Interval;
+        Livingroom_Ambient_Interval;
+        Livingroom_Smoke_Interval;
+        Livingroom_Motion_Interval;*/
   }
-  Serial.println();
+  else{
+    Serial.println("Unknown topic: ");
+    Serial.print(strTopic);
+    Serial.println("Value: ");
+    Serial.println((char*)payload); 
+  }
+
+  if (strTopic == "audio/home/bedroom/title") {
+    Serial.println("Found a title update");
+  }
 }
 
 void reconnect() {
@@ -107,14 +134,43 @@ void reconnect() {
 
 
 //======  Szenzorok kiolvasása  ======//
-/*void Livingroom_Temperature(){
-    
+void Livingroom_TemperatureRead(){
+    Livingroom_Temperature = dht.readTemperature();
+    client.publish("Livingroom/Temperature", String(Livingroom_Temperature).c_str(), true);
 }
-void Livingroom_Humidity()
-void Livingroom_Ambient()
-void Livingroom_Smoke()
-void Livingroom_Motiom()*/
 
+void Livingroom_HumidityRead(){
+    Livingroom_Humidity = dht.readHumidity();
+    client.publish("Livingroom/Humidity", String(Livingroom_Humidity).c_str(), true );
+}
+  
+void Livingroom_AmbientRead(){
+    Livingroom_Ambient = digitalRead(Livingroom_Ambient_PIN);
+    //0 ha világos, 1 ha sötét
+    if(Livingroom_Ambient==1){
+      client.publish("Livingroom/Ambient","0");
+    }
+    else if(Livingroom_Ambient==0){
+      client.publish("Livingroom/Ambient","1");
+    } 
+} 
+
+void Livingroom_SmokeRead(){
+    Livingroom_Smoke = digitalRead(Livingroom_Smoke_PIN);
+    client.publish("Livingroom/Smoke", String(Livingroom_Smoke).c_str(), true);
+}
+  
+void Livingroom_MotionRead(){
+    Livingroom_Motion = digitalRead(Livingroom_Motion_PIN);
+    if(Livingroom_Motion==1){
+      client.publish("Livingroom/Ambient","1");
+    }
+    else if(Livingroom_Motion==0){
+      client.publish("Livingroom/Ambient","0");
+    } 
+} 
+
+//======  Fő futás  ======//
 void setup() {
   setup_wifi();
   //client.setServer(mqtt_server,mqttPort);

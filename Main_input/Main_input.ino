@@ -3,6 +3,21 @@
 #include<DHT.h>
 #define DHTTYPE DHT22
 
+//======  GPIO  ======//
+#define Livingroom_TempHum_PIN 16 // D0 16
+#define Livingroom_Ambient_PIN 5  // D1 5
+#define Livingroom_Smoke_PIN 4    // D2 4
+#define Livingroom_Motion_PIN 0   // D3 0
+#define Frontyard_Doorlock_PIN 2  // D4 2
+#define Frontyard_TempHum_PIN 14  // D5 14 
+#define Frontyard_Ambient_PIN 12   // D6 12
+#define Frontyard_Motion_PIN 13   // D7 13
+#define Frontyard_Dumpster_PIN 15 // D8 15
+// RX 3
+// TX 1
+#define Frontyard_Grass_PIN 9     // SD2 9
+#define Frontyard_Rain_PIN 10     // SD3 10
+
 //======  Nappali változók  ======//
 int Livingroom_Temperature;
 float Livingroom_Humidity;
@@ -27,21 +42,6 @@ int Frontyard_Humidity_Interval;
 int Frontyard_Ambient_Interval;
 int Frontyard_Motion_Interval;
 
-//======  GPIO  ======//
-#define Livingroom_TempHum_PIN 16 // D0 16
-#define Livingroom_Ambient_PIN 5  // D1 5
-#define Livingroom_Smoke_PIN 4    // D2 4
-#define Livingroom_Motion_PIN 0   // D3 0
-#define Frontyard_Doorlock_PIN 2  // D4 2
-#define Frontyard_TempHum_PIN 14  // D5 14 
-#define Frontyard_Ambient_PIN 5   // D6 12
-#define Frontyard_Motion_PIN 13   // D7 13
-#define Frontyard_Dumpster_PIN 15 // D8 15
-// RX 3
-// TX 1
-#define Frontyard_Grass_PIN 9     // SD2 9
-#define Frontyard_Rain_PIN 10     // SD3 10
-
 //======  Konfiguráció  ======//
 const char* ssid = "kibu-guest";
 const char* password = "raday30";
@@ -56,7 +56,6 @@ PubSubClient client(wifiClient);
 long lastMsg = 0;
 char* msg;
 int value = 0;
-
 //void GetIntervals(){}
 
 //======  Wifi  ======//
@@ -94,7 +93,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   String strTopic = String((char*)topic);
   msg = (char*)payload;
 
-  if(strTopic == "Config/Intervals"){
+  if(strTopic == "Config_Intervals"){
         /*Tömböt nem tudok mqtt-n küldeni csak kódolással és dekódolással
          *Adat folyam falytája? 
         Livingroom_Temperature_Interval;
@@ -109,11 +108,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println("Value: ");
     Serial.println((char*)payload); 
   }
-
-  if (strTopic == "audio/home/bedroom/title") {
-    Serial.println("Found a title update");
-  }
-}
 
 void reconnect() {
   while (!client.connected()) {

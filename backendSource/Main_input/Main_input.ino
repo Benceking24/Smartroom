@@ -60,6 +60,7 @@ const char* mqtt_server = "192.168.1.20";
 const int mqttPort = 1883;
 const char* mqttUser = "Smartroom";
 const char* mqttPassword = "kibu";
+bool debug_mode = false;
 
 DHT Livingroom_dht(Livingroom_TempHum_PIN,DHTTYPE);
 DHT Frontyard_dht(Frontyard_TempHum_PIN,DHTTYPE);
@@ -89,6 +90,15 @@ void setup_wifi() {
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+}
+
+void Debug(char* sensorName,char* sensorValue){
+  if(debug_mode){
+  Serial.println("Szenzor neve: ");
+  Serial.print(sensorName);
+  Serial.println("Érték: ");
+  Serial.print(sensorValue);
+  }
 }
 
 //======  MQTT Callback  ======//
@@ -146,11 +156,19 @@ void reconnect() {
 void Livingroom_Temperature_Read(){
     Livingroom_Temperature = Livingroom_dht.readTemperature();
     client.publish("Livingroom/Temperature", String(Livingroom_Temperature).c_str(), true);
+
+    char output[16];
+    itoa(Livingroom_Temperature, output, 10);
+    Debug("Livingroom_Temperature", output);
 }
 
 void Livingroom_Humidity_Read(){
     Livingroom_Humidity = Livingroom_dht.readHumidity();
     client.publish("Livingroom/Humidity", String(Livingroom_Humidity).c_str(), true );
+
+    char output[16];
+    itoa(Livingroom_Humidity, output, 10);
+    Debug("Livingroom_Humidity", output);
 }
   
 void Livingroom_Ambient_Read(){
@@ -158,24 +176,44 @@ void Livingroom_Ambient_Read(){
     //0 ha világos, 1 ha sötét
     if(Livingroom_Ambient==1){
       client.publish("Livingroom/Ambient","0");
+  
+      char output[16];
+      itoa(1, output, 10);
+      Debug("Livingroom_Ambient", output);
     }
     else if(Livingroom_Ambient==0){
       client.publish("Livingroom/Ambient","1");
+
+      char output[16];
+      itoa(1, output, 10);
+      Debug("Livingroom_Ambient", output);
     } 
 } 
 
 void Livingroom_Smoke_Read(){
     Livingroom_Smoke = digitalRead(Livingroom_Smoke_PIN);
     client.publish("Livingroom/Smoke", String(Livingroom_Smoke).c_str(), true);
+
+    char output[16];
+    itoa(Livingroom_Smoke, output, 10);
+    Debug("Livingroom_Smoke", output);
 }
   
 void Livingroom_Motion_Read(){
     Livingroom_Motion = digitalRead(Livingroom_Motion_PIN);
     if(Livingroom_Motion==1){
       client.publish("Livingroom/Ambient","1");
+      
+      char output[16];
+      itoa(Livingroom_Motion, output, 10);
+      Debug("Livingroom_Motion", output);
     }
     else if(Livingroom_Motion==0){
       client.publish("Livingroom/Ambient","0");
+
+      char output[16];
+      itoa(Livingroom_Motion, output, 10);
+      Debug("Livingroom_Motion", output);
     } 
 } 
 
@@ -183,11 +221,19 @@ void Livingroom_Motion_Read(){
 void Frontyard_Temperature_Read(){
     Frontyard_Temperature = Frontyard_dht.readTemperature();
     client.publish("Frontyard/Temperature", String(Frontyard_Temperature).c_str(), true);
+      
+    char output[16];
+    itoa(Frontyard_Temperature, output, 10);
+    Debug("Frontyard_Temperature", output);
 }
 
 void Frontyard_Humidity_Read(){
     Frontyard_Humidity = Frontyard_dht.readHumidity();
     client.publish("Frontyard/Humidity", String(Frontyard_Humidity).c_str(), true );
+    
+    char output[16];
+    itoa(Frontyard_Humidity, output, 10);
+    Debug("Frontyard_Humidity", output);
 }
   
 void Frontyard_Ambient_Read(){
@@ -195,9 +241,17 @@ void Frontyard_Ambient_Read(){
     //0 ha világos, 1 ha sötét
     if(Frontyard_Ambient==1){
       client.publish("Frontyard/Ambient","0");
+
+      char output[16];
+      itoa(1, output, 10);
+      Debug("Frontyard_Ambient", output);
     }
     else if(Frontyard_Ambient==0){
       client.publish("Frontyard/Ambient","1");
+
+      char output[16];
+      itoa(0, output, 10);
+      Debug("Frontyard_Ambient", output);
     } 
 } 
   
@@ -205,9 +259,18 @@ void Frontyard_Motion_Read(){
     Frontyard_Motion = digitalRead(Frontyard_Motion_PIN);
     if(Frontyard_Motion==1){
       client.publish("Frontyard/Ambient","1");
+
+      char output[16];
+      itoa(Frontyard_Motion, output, 10);
+      Debug("Frontyard_Motion", output);
+      
     }
     else if(Frontyard_Motion==0){
       client.publish("Frontyard/Ambient","0");
+
+      char output[16];
+      itoa(Frontyard_Motion, output, 10);
+      Debug("Frontyard_Motion", output);
     } 
 } 
 

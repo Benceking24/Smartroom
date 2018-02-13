@@ -3,16 +3,16 @@ body{
 	color:#e0e0e0;
 	font-size: 20px;
 }
-#switch {
+.switch {
   position: relative;
   display: inline-block;
   width: 60px;
   height: 34px;
 }
 
-#switch input {display:none;}
+.switch input {display:none;}
 
-#slider {
+.slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -26,7 +26,7 @@ body{
 }
 
 
-#slider:before {
+.slider:before {
   position: absolute;
   content: "";
   height: 26px;
@@ -38,11 +38,11 @@ body{
   transition: .4s;
   border-radius: 50%;
 }
-input:checked + #slider {
+input:checked + .slider {
   background-color: #057825;
 }
 
-input:checked + #slider:before {
+input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);

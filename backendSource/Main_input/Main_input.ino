@@ -25,11 +25,11 @@ bool Livingroom_Ambient;
 bool Livingroom_Smoke;
 bool Livingroom_Motion;
 
-int Livingroom_Temperature_Interval = 1000;
-int Livingroom_Humidity_Interval = 500;
-int Livingroom_Ambient_Interval = 1000;
-int Livingroom_Smoke_Interval = 500;
-int Livingroom_Motion_Interval = 1000;
+int Livingroom_Temperature_Interval = 10000000;
+int Livingroom_Humidity_Interval = 10000000;
+int Livingroom_Ambient_Interval = 10000000;
+int Livingroom_Smoke_Interval = 10000000;
+int Livingroom_Motion_Interval = 3000;
 
 unsigned long Livingroom_Temperature_Milis = 0;
 unsigned long Livingroom_Humidity_Milis = 0;
@@ -43,10 +43,10 @@ int Frontyard_Humidity;
 bool Frontyard_Ambient;
 bool Frontyard_Motion;
 
-int Frontyard_Temperature_Interval = 500;
-int Frontyard_Humidity_Interval = 1000;
-int Frontyard_Ambient_Interval = 500;
-int Frontyard_Motion_Interval = 1000;
+int Frontyard_Temperature_Interval = 10000000;
+int Frontyard_Humidity_Interval = 10000000;
+int Frontyard_Ambient_Interval = 10000000;
+int Frontyard_Motion_Interval = 10000000;
 
 unsigned long Frontyard_Temperature_Milis = 0;
 unsigned long Frontyard_Humidity_Milis = 0;
@@ -55,12 +55,12 @@ unsigned long Frontyard_Motion_Milis = 0;
 
 //======  Konfiguráció  ======//
 const char* ssid = "kibu-guest";
-const char* password = "raday30";
+const char* password = "kiburaday30";
 const char* mqtt_server = "192.168.1.20";
 const int mqttPort = 1883;
 const char* mqttUser = "Smartroom";
 const char* mqttPassword = "kibu";
-bool debug_mode = false;
+bool debug_mode = true;
 
 DHT Livingroom_dht(Livingroom_TempHum_PIN,DHTTYPE);
 DHT Frontyard_dht(Frontyard_TempHum_PIN,DHTTYPE);
@@ -96,8 +96,10 @@ void Debug(char* sensorName,char* sensorValue){
   if(debug_mode){
   Serial.println("Szenzor neve: ");
   Serial.print(sensorName);
+  Serial.println();
   Serial.println("Érték: ");
   Serial.print(sensorValue);
+  Serial.println();
   }
 }
 
@@ -155,8 +157,8 @@ void reconnect() {
 //======  Beltéri szenzorok kiolvasása  ======//
 void Livingroom_Temperature_Read(){
     Livingroom_Temperature = Livingroom_dht.readTemperature();
-    client.publish("Livingroom/Temperature", String(Livingroom_Temperature).c_str(), true);
-
+    //client.publish("Livingroom/Temperature", String(Livingroom_Temperature).c_str(), true);
+    
     char output[16];
     itoa(Livingroom_Temperature, output, 10);
     Debug("Livingroom_Temperature", output);
@@ -220,8 +222,7 @@ void Livingroom_Motion_Read(){
 //======  Kültéri szenzorok kiolvasása  ======//
 void Frontyard_Temperature_Read(){
     Frontyard_Temperature = Frontyard_dht.readTemperature();
-    client.publish("Frontyard/Temperature", String(Frontyard_Temperature).c_str(), true);
-      
+    //client.publish("Frontyard/Temperature", String(Frontyard_Temperature).c_str(), true);
     char output[16];
     itoa(Frontyard_Temperature, output, 10);
     Debug("Frontyard_Temperature", output);
@@ -343,6 +344,7 @@ void Frontyard_Motion_Update(){
 
 //======  Fő futás  ======//
 void setup() {
+  Serial.begin(9600);
   pinMode(Livingroom_TempHum_PIN, INPUT);
   pinMode(Livingroom_Ambient_PIN, INPUT);
   pinMode(Livingroom_Smoke_PIN, INPUT);
@@ -355,13 +357,14 @@ void setup() {
   pinMode(Frontyard_Grass_PIN, INPUT);
   pinMode(Frontyard_Rain_PIN, INPUT);
   setup_wifi();
-  client.setServer(mqtt_server,mqttPort);
-  client.setCallback(callback);
+  //client.setServer(mqtt_server,mqttPort);
+  //client.setCallback(callback);
 }
 
 void loop() {
-  if (!client.connected()) {reconnect();}
-  client.loop();
+  //if (!client.connected()) {reconnect();}
+  //client.loop();
+  currentMilis = millis();
   Livingroom_Temperature_Update();
   Livingroom_Humidity_Update();
   Livingroom_Ambient_Update();

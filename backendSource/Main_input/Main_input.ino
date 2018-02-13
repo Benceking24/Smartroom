@@ -280,6 +280,17 @@ void Frontyard_Motion_Update(){
 
 //======  Fő futás  ======//
 void setup() {
+  pinMode(Livingroom_TempHum_PIN, INPUT);
+  pinMode(Livingroom_Ambient_PIN, INPUT);
+  pinMode(Livingroom_Smoke_PIN, INPUT);
+  pinMode(Livingroom_Motion_PIN, INPUT);
+  pinMode(Frontyard_Doorlock_PIN, INPUT);
+  pinMode(Frontyard_TempHum_PIN, INPUT);
+  pinMode(Frontyard_Ambient_PIN, INPUT);
+  pinMode(Frontyard_Motion_PIN, INPUT);
+  pinMode(Frontyard_Dumpster_PIN, INPUT);
+  pinMode(Frontyard_Grass_PIN, INPUT);
+  pinMode(Frontyard_Rain_PIN, INPUT);
   setup_wifi();
   client.setServer(mqtt_server,mqttPort);
   client.setCallback(callback);

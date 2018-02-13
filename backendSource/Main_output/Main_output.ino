@@ -174,6 +174,17 @@ void reconnect() {
 
 //======  Fő futás  ======//
 void setup() {
+  pinMode(Livingroom_Lamp_1_PIN, OUTPUT);
+  pinMode(Livingroom_Lamp_2_PIN, OUTPUT);
+  pinMode(Livingroom_Cooler_PIN, OUTPUT);
+  pinMode(Livingroom_Heater_PIN, OUTPUT);
+  pinMode(Livingroom_Window_PIN, OUTPUT);
+  pinMode(Livingroom_Shades_PIN, OUTPUT);
+  pinMode(Livingroom_Mood_R_PIN, OUTPUT);
+  pinMode(Livingroom_Mood_G_PIN, OUTPUT);
+  pinMode(Livingroom_Mood_B_PIN, OUTPUT);
+  pinMode(Frontyard_Doorlock_PIN, OUTPUT);
+  pinMode(Frontyard_Sprinkler_PIN, OUTPUT);
   setup_wifi();
   client.setServer(mqtt_server,mqttPort);
   client.setCallback(callback);

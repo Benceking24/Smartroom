@@ -4,11 +4,12 @@
 #define DHTTYPE DHT22
 
 //======  GPIO  ======//
-#define Livingroom_TempHum_PIN 16 // D0 16
+//#define Livingroom_TempHum_PIN 16 // D0 16
 #define Livingroom_Ambient_PIN 5  // D1 5
 #define Livingroom_Smoke_PIN 4    // D2 4
 #define Livingroom_Motion_PIN 0   // D3 0
-#define Frontyard_Doorlock_PIN 2  // D4 2
+#define Livingroom_TempHum_PIN 2  // D4 2
+#define Frontyard_Doorlock_PIN 2  // D0 16
 #define Frontyard_TempHum_PIN 14  // D5 14 
 #define Frontyard_Ambient_PIN 12   // D6 12
 #define Frontyard_Motion_PIN 13   // D7 13

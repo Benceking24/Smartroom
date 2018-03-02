@@ -2,70 +2,126 @@
 <html lang="hu">
 <head>
 	<meta charset="utf8">
-	<title>Kibu Smart Home</title>
+	<title>The Smart Room</title>
 	<link rel="stylesheet" type="text/css" href="style.css"> 
 </head>
 <body>
 	<table>
 		
 		<tr>
-			<td rowspan="2">
+			<td class="keret"  rowspan="2">
+				
+					<label class="container2">Lámpa &#10112;
+						<input type="checkbox">
+						<span class="checkmark2"></span>
+					</label>
+					
+					<label class="container2">Lámpa &#10113;
+						<input type="checkbox">
+						<span class="checkmark2"></span>
+					</label>
+					
+					<label class="container2">TV
+						<input type="checkbox">
+						<span class="checkmark2"></span>
+					</label>
+					
+					<label class="container2">Ventilátor
+						<input type="checkbox">
+						<span class="checkmark2"></span>
+					</label>
+					
+					<label class="container2">Ablak
+						<input type="checkbox">
+						<span class="checkmark2"></span>
+					</label>
+					
+					<label class="container2">Ajtózár
+						<input type="checkbox">
+						<span class="checkmark2"></span>
+					</label>
+					
+					<label class="container2">Locsoló
+						<input type="checkbox">
+						<span class="checkmark2"></span>
+					</label>
+				
+			</td>
+			<td class="keret" rowspan="2">
+				<a style="font-size:26px">Bent</a>
 				<ul>
-					<li><pre>Lámpa1		<label class="switch"><input type="checkbox"><span class="slider"></span></label> </pre>
-					<li><pre>Lámpa2		<label class="switch"><input type="checkbox"><span class="slider"></span></label> </pre>
-					<li><pre>TV		<label class="switch"><input type="checkbox"><span class="slider"></span></label> </pre>
-					<li><pre>Ajtózár		<label class="switch"><input type="checkbox"><span class="slider"></span></label> </pre>
-					<li><pre>Locsoló		<label class="switch"><input type="checkbox"><span class="slider"></span></label> </pre>
-					<li><pre>Ventillátor	<label class="switch"><input type="checkbox"><span class="slider"></span></label> </pre>
-					<li><pre>Ablak		<label class="switch"><input type="checkbox"><span class="slider"></span></label> </pre>
-					<li><pre>Fűtés		<input type="number" name="temp" value="20" min="0" max="30" step="1" style="width: 40px"></pre>
+					<li>hőmérséklet 
+					<li>páratartalom
+				</ul>
+				<hr>
+				<a style="font-size:26px">Kint</a>
+				<ul>
+					<li>hőmérséklet
+					<li>páratartalom
 				</ul>
 			</td>
-			<td  >
-				<ul>
-					<li>Bent
-						<ul id="a">
-							<li> <pre>hőmérséklet		24°C</pre>
-							<li> <pre>páratartalom		20%</pre>
-						</ul>
-					<li> Kint 
-						<ul id="a">
-							<li><pre>hőmérséklet		24°C</pre>
-							<li><pre>páratartalom		20%</pre>
-						</ul>
-					<li><pre>CO2 szint		0,1%</pre>
-					<li><pre>Földnedvesség		85%</pre>
-					<li><pre>Eső		Igen</pre>
-					<li><pre>Kuka		Nem</pre>
-				 </ul>
-			</td>
-			<td style="text-align:right" colspan="2">
-				<img src="cincos2.png" id="logo">
+			<td style="vertical-align:top" class="logo" >
+				 <img src="logo.png" id="logo"> 
 			</td>
 		</tr>
 		<tr>
-			<td>
-				<ul>
-					<li>Redőny
-					<ul id="a">
-						<li><input type="radio" name="align" value="top" checked>Fent
-						<li><input type="radio" name="align" value="center">Közép
-						<li><input type="radio" name="align" value="down">Lent
-					</ul>
-				</ul>
-			</td>
-			<td>
-			<ul>
-					<li>Hangulatvilágítás
-					<ul id="a">
-						<li> <input type="radio" name="color" value="blue">Kék
-						<li> <input type="radio" name="color" value="red" checked>Piros
-						<li> <input type="radio" name="color" value="green">Zöld
-					</ul>
-				</ul>
+			
+			
+			<td class="keret" id="redony" >
+				<div class="cim">Redőny</div>
+				<br>
+				<label class="container"> Fent
+					<input type="radio" name="align" value="top" checked>
+					<span class="checkmark"></span>
+				</label>
+				
+				<label class="container">Közép
+					<input type="radio" name="align" value="center">
+					<span class="checkmark"></span>
+				</label>
+				
+				<label class="container">Lent
+					<input type="radio" name="align" value="down">
+					<span class="checkmark"></span>
+				</label>
+				
 			</td>
 		</tr>
-	
+		<tr>
+			<td class="keret" id="futes">
+				<div class="cim">Fűtés</div>
+			</td>
+			<td class="keret" >
+				<ul>
+					<li>CO2 szint
+					<li>Földnedvesség
+					<li>Eső
+					<li>Kuka
+				</ul>
+				
+			</td>
+			<td class="keret" >
+				<div class="cim">Hangulatvilágítás</div>
+				<label class="container">Kék
+					<input type="radio" name="color" value="blue">
+					<span class="checkmark"></span>
+				</label>
+				
+				<label class="container">Piros
+					<input type="radio" name="color" value="red" checked>
+					<span class="checkmark"></span>
+				</label>
+				
+				<label class="container">Zöld
+					<input type="radio" name="color" value="green">
+					<span class="checkmark"></span>
+				</label>
+				
+				<label class="container">Nincs
+					<input type="radio" name="color" value="none">
+					<span class="checkmark"></span>
+				</label>
+			</td>
 	</table>
 		
 

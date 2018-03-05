@@ -65,13 +65,43 @@ table{
 	height: 100vh;
 	border-spacing: 5px;
 }
+#hangulat{
+	float: right;
+	width: 150px;
 
+}
 #logo{
 	float: right;
 	width: 200px;
 }
-#adatok{
-	height : 30vh;
+
+.icon{
+	width: 50px;
+}
+	
+#kuka{
+	height: 35px;
+}
+
+
+.adat{
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 80%;
+	
+}
+.adatok2{
+	display: block;
+	position: relative;
+	padding-left: 25px;
+	margin-bottom: 10px;
+}
+.adatok{
+	display: block;
+	position: relative;
+	padding-left: 10px;
+	margin-bottom: 8px;
 }
 .logo{
 	vertical-align: top;

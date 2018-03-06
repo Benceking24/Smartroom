@@ -75,14 +75,50 @@ table{
 	width: 200px;
 }
 
+.helyzet{
+	display: block;
+	position: relative;
+}
+.redkivul{
+	display: block;
+	position: absolute;
+	top:0;
+	left: 45%;
+	width: 100px;
+	height: 150px;
+	border: 2px solid #fc5e6d;
+	
+}
+#redbelul{
+	display: none;
+	position: absolute;
+	top:1.5%;
+	left: 2.5%;
+	width: 95px;
+	height: 75px;
+	background-color: #fc5e6d;
+	
+}
+
+
 .icon{
 	width: 50px;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 80%;
 }
 	
 #kuka{
 	height: 35px;
 }
-
+.adat2{
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 70%;
+	
+}
 
 .adat{
 	display: block;

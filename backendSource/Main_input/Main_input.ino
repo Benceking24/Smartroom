@@ -62,10 +62,12 @@ unsigned long Frontyard_Rain_Milis = 0;
 
 //======  Konfiguráció  ======//
 //const char* ssid = "kibu-guest";
-const char* ssid = "kibu";
+//const char* ssid = "kibu";
+const char* ssid = "SmartRoom";
 //const char* password = "kiburaday30";
-const char* password = "acdcabbaedda2";
-const char* mqtt_server = "iot.office.kibu.hu";
+//const char* password = "acdcabbaedda2";
+const char* password = "almakamion";
+const char* mqtt_server = "192.168.80.1";
 const int mqttPort = 1883;
 const char* mqttUser = "";
 const char* mqttPassword = "";
@@ -79,7 +81,6 @@ unsigned long currentMilis = 0;
 long lastMsg = 0;
 char* msg;
 int value = 0;
-//void GetIntervals(){}
 
 //======  Wifi  ======//
 void setup_wifi() {
@@ -114,15 +115,6 @@ void Debug(char* sensorName, char* sensorValue) {
 
 //======  MQTT Callback  ======//
 void callback(char* topic, byte* payload, unsigned int length) {
-  /* DEBUG MODE
-    Serial.print("Message arrived [");
-    Serial.print(topic);
-    Serial.print("] ");
-    for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-    }
-    Serial.println();*/
-
   payload[length] = '\0';
   String strTopic = String((char*)topic);
   msg = (char*)payload;

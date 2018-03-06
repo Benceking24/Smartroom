@@ -3,7 +3,8 @@
 <head>
 	<meta charset="utf8">
 	<title>The Smart Room</title>
-	<link rel="stylesheet" type="text/css" href="style.css"> 
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="java.js"></script>
 </head>
 <body>
 	<table>
@@ -51,22 +52,22 @@
 				<a style="font-size:26px">Bent</a>
 				<br>
 				<label class="adatok2">hőmérséklet 
-				<span class="adat"><img src="hom.png"class="icon" alt="hőm"></span>
+				<span class="adat2">22°C<img src="hom.png"class="icon" alt="hőm"></span>
 				</label>
 				<br>
 				<label class="adatok2">páratartalom
-				<span class="adat"><img src="para.png" class="icon"alt="pára"></span>
+				<span class="adat2">21%<img src="para.png" class="icon"alt="pára"></span>
 				</label>
 				<br>
 				<hr>
 				<a style="font-size:26px">Kint</a>
 				<br>
 				<label class="adatok2">hőmérséklet
-				<span class="adat"><img src="hom.png"class="icon" alt="hőm"></span>
+				<span class="adat2">18°C <img src="hom.png"class="icon" alt="hőm"></span>
 				</label>
 				<br>
 				<label class="adatok2">páratartalom
-				<span class="adat"><img src="para.png" class="icon" alt="pára"></span>
+				<span class="adat2">82%<img src="para.png" class="icon" alt="pára"></span>
 				</label>
 			</td>
 			<td style="vertical-align:top" class="logo" >
@@ -79,21 +80,25 @@
 			<td class="keret" id="redony" >
 				<div class="cim">Redőny</div>
 				<br>
+				<label   class="helyzet">
+				<div class="redkivul"><div id="redbelul"></div></div>
+				<form onclick="redony()">
+				</label>
 				<label class="container"> Fent
-					<input type="radio" name="align" value="top" checked>
+					<input type="radio" name="align" id="fent" value="top" checked>
 					<span class="checkmark"></span>
 				</label>
 				
 				<label class="container">Közép
-					<input type="radio" name="align" value="center">
+					<input type="radio" name="align" id="kozep"value="center">
 					<span class="checkmark"></span>
 				</label>
 				
 				<label class="container">Lent
-					<input type="radio" name="align" value="down">
+					<input type="radio" name="align" id="lent" value="down">
 					<span class="checkmark"></span>
 				</label>
-				
+				</form>
 			</td>
 		</tr>
 		<tr>
@@ -121,26 +126,29 @@
 			</td>
 			<td class="keret" >
 				<div class="cim">Hangulatvilágítás</div>
-				<img id="hangulat" src="kek.png"  alt="kek">
+				
+				<img id="hangulat" src="piros.png"  alt="kek">
+				<form id="hangform" name="hangform" onclick="hangulatvil()">
 				<label class="container">Kék
-					<input type="radio" name="color" value="blue">
+					<input type="radio" name="color" id="blue"value="blue">
 					<span class="checkmark"></span>
 				</label>
 				
 				<label class="container">Piros
-					<input type="radio" name="color" value="red" checked>
+					<input type="radio" name="color" id="red" value="red" checked>
 					<span class="checkmark"></span>
 				</label>
 				
 				<label class="container">Zöld
-					<input type="radio" name="color" value="green">
+					<input type="radio" name="color" id="green" value="green">
 					<span class="checkmark"></span>
 				</label>
 				
 				<label class="container">Nincs
-					<input type="radio" name="color" value="none">
+					<input type="radio" name="color" id="none" value="none">
 					<span class="checkmark"></span>
 				</label>
+				</form>
 			</td>
 	</table>
 		

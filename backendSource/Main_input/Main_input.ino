@@ -1,7 +1,8 @@
 #include<ESP8266WiFi.h>
 #include<PubSubClient.h>
 #include<DHT.h>
-#define DHTTYPE DHT22
+#define LivingroomDHTTYPE DHT11
+#define FrontyardDHTTYPE DHT22
 
 //======  GPIO  ======//
 //#define Livingroom_TempHum_PIN 16 // D0 16
@@ -62,19 +63,20 @@ unsigned long Frontyard_Rain_Milis = 0;
 
 //======  Konfiguráció  ======//
 //const char* ssid = "kibu-guest";
-//const char* ssid = "kibu";
-const char* ssid = "SmartRoom";
+const char* ssid = "kibu";
+//const char* ssid = "SmartRoom";
 //const char* password = "kiburaday30";
-//const char* password = "acdcabbaedda2";
-const char* password = "almakamion";
-const char* mqtt_server = "192.168.80.1";
+const char* password = "acdcabbaedda2";
+//const char* password = "almakamion";
+//const char* mqtt_server = "192.168.80.1";
+const char* mqtt_server = "iot.office.kibu.hu";
 const int mqttPort = 1883;
 const char* mqttUser = "";
 const char* mqttPassword = "";
 bool debug_mode = false;
 
-DHT Livingroom_dht(Livingroom_TempHum_PIN, DHTTYPE);
-DHT Frontyard_dht(Frontyard_TempHum_PIN, DHTTYPE);
+DHT Livingroom_dht(Livingroom_TempHum_PIN, LivingroomDHTTYPE);
+DHT Frontyard_dht(Frontyard_TempHum_PIN, FrontyardDHTTYPE);
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
 unsigned long currentMilis = 0;

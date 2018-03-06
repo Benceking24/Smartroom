@@ -11,13 +11,11 @@ body{
 	cursor: pointer ;
 	user-select: none;
 }
-
 .container input{
 	position: absolute;
 	opacity: 0;
 	cursor: pointer;
 }
-
 .checkmark{
 	position: absolute;
 	top:0;
@@ -27,17 +25,14 @@ body{
 	border: 2px solid #fc5e6d;
 	border-radius: 50%;
 }
-
 .checkmark:after{
 	content:"";
 	position:absolute;
 	display: none;
 }
-
 .container input:checked ~ .checkmark:after {
   display: block;
 }
-
 .container .checkmark:after {
   top: 3px;
   left: 3px;
@@ -46,7 +41,6 @@ body{
   border-radius: 50%;
   background: #fc5e6d;
 }
-
 .cim{
 	text-align: center;
 	font-size: 26px;
@@ -56,7 +50,6 @@ hr{
   height: 1px; 
 background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #fc5e6d, rgba(0, 0, 0, 0));
 }
-
 ul{
 	list-style: none;
 }
@@ -74,7 +67,6 @@ table{
 	float: right;
 	width: 200px;
 }
-
 .helyzet{
 	display: block;
 	position: relative;
@@ -99,8 +91,6 @@ table{
 	background-color: #fc5e6d;
 	
 }
-
-
 .icon{
 	width: 50px;
 	display: block;
@@ -108,7 +98,6 @@ table{
 	top: 0;
 	left: 80%;
 }
-	
 #kuka{
 	height: 35px;
 }
@@ -119,7 +108,6 @@ table{
 	left: 70%;
 	
 }
-
 .adat{
 	display: block;
 	position: absolute;
@@ -144,7 +132,6 @@ table{
 	text-align: right;
 	height: 20vh;
 }
-
 .keret{
 	border: 2px solid;
 	border-color: #fc5e6d;
@@ -155,9 +142,7 @@ table{
 	height: 40vh;
 	vertical-align: top;
 }
-#futes{
-vertical-align:top;
-}
+
 .container2{
 	display: block;
 	position: relative;
@@ -181,7 +166,6 @@ vertical-align:top;
 	transform: rotate(45deg) ;
 	border: 2px solid #fc5e6d;
 }
-
 .checkmark2:after{
 	content:"";
 	position:absolute;
@@ -197,5 +181,37 @@ vertical-align:top;
 .container2 input:checked ~ .checkmark2:after {
   display: block;
 }
-
-
+.circle{
+	display:block;
+	position:relative;
+	top:0;
+	left:25%;
+	border: 5px dashed #181818;
+    border-radius: 50%;
+    background: #181818;
+    background-clip: padding-box;
+	width: 174px;
+	height: 174px;
+	overflow: visible;
+	 
+}
+.circle:after{
+	 position: absolute;
+    top: -4px; bottom: -4px;
+    left: -4px; right: -4px;
+    background: linear-gradient(#fc5e6d, #fff3f4);
+    content: '';
+    z-index: -1;
+	border-radius: 50%;
+	}
+.futes{
+	font-size:44px;
+	font-weight:bold;
+	display:block;
+	position:absolute;
+	top:35%;
+	left:28%;
+	background: -webkit-linear-gradient(#fc5e6d, #fff3f4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

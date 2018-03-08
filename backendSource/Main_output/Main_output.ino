@@ -77,11 +77,16 @@ void setup_wifi() {
 //======  Kimenetek feldolgozása  ======//
 void Bool_Toggle(int PIN_Number,char* message){
     int value = message[0]-'0';
+    Serial.println("value==0");
+    Serial.println(value==0);
+    Serial.println("value==1");
+    Serial.println(value==1);
+
     if(value==0){
-        digitalWrite(PIN_Number, LOW);
+        digitalWrite(PIN_Number, HIGH);
       }
       else if(value==1){
-        digitalWrite(PIN_Number, HIGH);
+        digitalWrite(PIN_Number, LOW);
       }
 }
       
@@ -198,7 +203,6 @@ void setup() {
   setup_wifi();
   client.setServer(mqtt_server,mqttPort);
   client.setCallback(callback);
-  client.subscribe("Neumann/SmartRoom/Livingroom/Lamp/1");
   //servo.attach(Livingroom_Window_PIN);
 }
 
@@ -208,13 +212,13 @@ void loop() {
     client.subscribe("Neumann/SmartRoom/Livingroom/Lamp/1");
     client.subscribe("Neumann/SmartRoom/Livingroom/Lamp/2");
     client.subscribe("Neumann/SmartRoom/Livingroom/Cooler");
-    client.subscribe("Neumann/SmartRoom/Livingroom/Heater");
+    /*client.subscribe("Neumann/SmartRoom/Livingroom/Heater");
     client.subscribe("Neumann/SmartRoom/Livingroom/Window");
     client.subscribe("Neumann/SmartRoom/Livingroom/Mood/R");
     client.subscribe("Neumann/SmartRoom/Livingroom/Mood/G");
     client.subscribe("Neumann/SmartRoom/Livingroom/Mood/B");
     client.subscribe("Neumann/SmartRoom/Frontyard/Doorlock");
-    client.subscribe("Neumann/SmartRoom/Frontyard/Sprinkler");
+    client.subscribe("Neumann/SmartRoom/Frontyard/Sprinkler");*/
     }
   client.loop();
 }

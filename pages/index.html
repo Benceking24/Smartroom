@@ -4,21 +4,21 @@
 	<meta charset="utf8">
 	<title>The Smart Room</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="jquery-3.3.1.min.js"></script>
 	<script src="java.js"></script>
 </head>
 <body>
 	<table>
-		
 		<tr>
 			<td class="keret"  rowspan="2">
 				
 					<label class="container2">Lámpa &#10112;
-						<input type="checkbox">
+						<input type="checkbox" class="switch" value="lamp1">
 						<span class="checkmark2"></span>
 					</label>
 					
 					<label class="container2">Lámpa &#10113;
-						<input type="checkbox">
+						<input type="checkbox" class="switch" value="lamp2">
 						<span class="checkmark2"></span>
 					</label>
 					
@@ -82,23 +82,22 @@
 				<br>
 				<label   class="helyzet">
 				<div class="redkivul"><div id="redbelul"></div></div>
-				<form onclick="redony()">
+				
 				</label>
 				<label class="container"> Fent
-					<input type="radio" name="align" id="fent" value="top" checked>
+					<input type="radio" name="align" id="fent" value="0" checked>
 					<span class="checkmark"></span>
 				</label>
 				
 				<label class="container">Közép
-					<input type="radio" name="align" id="kozep"value="center">
+					<input type="radio" name="align" id="kozep" value="75">
 					<span class="checkmark"></span>
 				</label>
 				
 				<label class="container">Lent
-					<input type="radio" name="align" id="lent" value="down">
+					<input type="radio" name="align" id="lent" value="145">
 					<span class="checkmark"></span>
 				</label>
-				</form>
 			</td>
 		</tr>
 		<tr>
@@ -130,35 +129,32 @@
 				
 				
 			</td>
-			<td class="keret" >
+			<td class="keret" id="hangulat-wrapper">
 				<div class="cim">Hangulatvilágítás</div>
 				
 				<img id="hangulat" src="piros.png"  alt="kek">
-				<form id="hangform" name="hangform" onclick="hangulatvil()">
+				<form id="hangform" name="hangform" >
 				<label class="container">Kék
-					<input type="radio" name="color" id="blue"value="blue">
+					<input type="radio" name="color" id="blue"value="kek">
 					<span class="checkmark"></span>
 				</label>
 				
 				<label class="container">Piros
-					<input type="radio" name="color" id="red" value="red" checked>
+					<input type="radio" name="color" id="red" value="piros" checked>
 					<span class="checkmark"></span>
 				</label>
 				
 				<label class="container">Zöld
-					<input type="radio" name="color" id="green" value="green">
+					<input type="radio" name="color" id="green" value="zold">
 					<span class="checkmark"></span>
 				</label>
 				
 				<label class="container">Nincs
-					<input type="radio" name="color" id="none" value="none">
+					<input type="radio" name="color" id="none" value="nincs">
 					<span class="checkmark"></span>
 				</label>
 				</form>
 			</td>
 	</table>
-		
-
-
 		</body>
 </html>

@@ -1,41 +1,31 @@
-function hangulatvil()
-{
-	var kep= document.getElementById("hangulat");
+$( document ).ready(function() {
+
+	var SmartRoomSocket = new WebSocket("ws://192.168.10.110:8080");
+	SmartRoomSocket.onopen = function (event) {
+  SmartRoomSocket.send("asd"); 
+};
+
+	var hangulatWrapper = $("#hangulat-wrapper");
+	hangulatWrapper.find("input").on('change', function() {
+		var inputvalue=$(this).val();
+		$("#hangulat").attr("src",inputvalue + ".png");
+	});;
 	
-	if(document.getElementById("red").checked)
-	{
-		kep.src="piros.png"
-	}
-	if(document.getElementById("blue").checked)
-	{
-		kep.src="kek.png"
-	}
-	if(document.getElementById("green").checked)
-	{
-		kep.src="zold.png"
-	}
-	if(document.getElementById("none").checked)
-	{
-		kep.src="nincs.png"
-	}
-}
-function redony()
-{
-	var red= document.getElementById("redbelul");
+	var redonyWrapper=$("#redony");
+	redonyWrapper.find("input").on('change', function() {
+		var inputvalue=$(this).val();
+		$("#redbelul").height(inputvalue);
+	});;
+
+	$(".switch").on('change', function() {
+		var inputvalue=$(this).val();
+		var allas=0;
+		if ($(this).is(':checked')) {
+			allas=1;
+		}
+		console.log(inputvalue,allas);
+		 SmartRoomSocket.send(inputvalue + allas); 
+	});;
 	
-	if(document.getElementById("fent").checked)
-	{
-		red.style.display="none";
-	}
-	if(document.getElementById("kozep").checked)
-	{
-		red.style.height="75px";
-		red.style.display="block";
-	}
-	if(document.getElementById("lent").checked)
-	{
-		red.style.height="145px";
-		red.style.display="block";
-	}
-	
-}
+	//192.168.10.254
+});

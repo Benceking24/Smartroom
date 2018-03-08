@@ -2,7 +2,7 @@ $( document ).ready(function() {
 
 	var SmartRoomSocket = new WebSocket("ws://192.168.10.110:8080");
 	SmartRoomSocket.onopen = function (event) {
-  SmartRoomSocket.send("asd"); 
+	
 };
 
 	var hangulatWrapper = $("#hangulat-wrapper");
@@ -24,8 +24,8 @@ $( document ).ready(function() {
 			allas=1;
 		}
 		console.log(inputvalue,allas);
-		 SmartRoomSocket.send(inputvalue + allas); 
+		 martRoomSocket.send(inputvalue +allas); 
 	});;
 	
-	//192.168.10.254
+	//192.168.10.110
 });

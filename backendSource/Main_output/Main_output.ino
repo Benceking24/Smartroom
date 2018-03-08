@@ -177,6 +177,25 @@ void reconnect() {
 
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
+      client.subscribe("Neumann/SmartRoom/Livingroom/Lamp/1");   
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Livingroom/Lamp/2");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Livingroom/Cooler");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Livingroom/Heater");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Livingroom/Window");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Livingroom/Mood/R");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Livingroom/Mood/G");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Livingroom/Mood/B");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Frontyard/Doorlock");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Frontyard/Sprinkler");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -209,16 +228,6 @@ void setup() {
 void loop() {
   if (!client.connected()) {
     reconnect();
-    client.subscribe("Neumann/SmartRoom/Livingroom/Lamp/1");
-    client.subscribe("Neumann/SmartRoom/Livingroom/Lamp/2");
-    client.subscribe("Neumann/SmartRoom/Livingroom/Cooler");
-    /*client.subscribe("Neumann/SmartRoom/Livingroom/Heater");
-    client.subscribe("Neumann/SmartRoom/Livingroom/Window");
-    client.subscribe("Neumann/SmartRoom/Livingroom/Mood/R");
-    client.subscribe("Neumann/SmartRoom/Livingroom/Mood/G");
-    client.subscribe("Neumann/SmartRoom/Livingroom/Mood/B");
-    client.subscribe("Neumann/SmartRoom/Frontyard/Doorlock");
-    client.subscribe("Neumann/SmartRoom/Frontyard/Sprinkler");*/
     }
   client.loop();
 }

@@ -14,7 +14,7 @@ wss.on('connection', function connection(ws) {
     console.log('connected');
     ws.on('message', function incoming(message) {
         console.log('received: %s', message);
-        var res = message.split(";")
+        var res = message.split(";");
         console.log(res[0]);
         console.log(res[1]);
         client.publish(res[0], res[1]);
@@ -27,17 +27,17 @@ wss.on('connection', function connection(ws) {
 //Neumann/SmartRoom/
 
 
-var Neumann_SmartRoom_Livingroom_Lamp_1
-var Neumann_SmartRoom_Livingroom_Lamp_2
-var Neumann_SmartRoom_Livingroom_Cooler
-var Neumann_SmartRoom_Livingroom_Window
-var Neumann_SmartRoom_Livingroom_Heater
-var Neumann_SmartRoom_Livingroom_Shades
-var Neumann_SmartRoom_Livingroom_Mood_R
-var Neumann_SmartRoom_Livingroom_Mood_G
-var Neumann_SmartRoom_Livingroom_Mood_B
-var Neumann_SmartRoom_Frontyard_Doorlock
-var Neumann_SmartRoom_Frontyard_Sprinkler
+var Neumann_SmartRoom_Livingroom_Lamp_1;
+var Neumann_SmartRoom_Livingroom_Lamp_2;
+var Neumann_SmartRoom_Livingroom_Cooler;
+var Neumann_SmartRoom_Livingroom_Window;
+var Neumann_SmartRoom_Livingroom_Heater;
+var Neumann_SmartRoom_Livingroom_Shades;
+var Neumann_SmartRoom_Livingroom_Mood_R;
+var Neumann_SmartRoom_Livingroom_Mood_G;
+var Neumann_SmartRoom_Livingroom_Mood_B;
+var Neumann_SmartRoom_Frontyard_Doorlock;
+var Neumann_SmartRoom_Frontyard_Sprinkler;
 
 
 
@@ -66,9 +66,11 @@ client.on('message', function (topic, message) {
     console.log(topic);
     //client.publish(res[0]+res[1]);
 
+    //webkliens
+
     switch (res[0]) {
         case "Neumann/SmartRoom/Livingroom/Lamp/1":
-            client.publish("res[0],res[1]")
+            client.publish("res[0],res[1]");
             break;
 
         case "Neumann/SmartRoom/Livingroom/Lamp/2":
@@ -133,6 +135,8 @@ client.on('message', function (topic, message) {
     }
     //source:https://www.w3schools.com/jsref/jsref_switch.asp
 
+    //automatizáció
+
     if (topic == "Neumann/SmartRoom/Frontyard/Livingroom/Lamp/2" && message == 0) {
         client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
     }
@@ -143,5 +147,37 @@ client.on('message', function (topic, message) {
     if ((topic == "Neumann/SmartRoom/Livingroom/Ambient" && message == 0) && (topic == "Neumann/SmartRoom/Frontyard/Ambient" && message == 1)) {
         client.publish("Neumann/SmartRoom/Livingroom/Shades", "100");
     }
-    
+
+    if (topic == "Neumann/SmartRoom/Frontyard/Grass" && message == "0") {
+        client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
+    }
+
+    if (topic == "Neumann/SmartRoom/Livingroom/Motion" && message == "1") {
+        client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
+        for (var i = 0; i < topic == "Neumann/SmartRoom/Livingroom/Motion" && message == "0" ; i++) {
+            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
+            client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "1");
+            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+            client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
+        }
+        console.log("A riasztó riaszt.");
+    }
+
+    if (topic =="Neumann/SmartRoom/Livingroom/Smoke" && message=="1") {
+        client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Heater", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Cooler", "100");
+        client.publish("Neumann/SmartRoom/Frontyard/Doorlock", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
+    }
+    //távollét
+    if (true) {
+        client.publish("Neumann/SmartRoom/Frontyard/Doorlock", "1");
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
+    }
 })

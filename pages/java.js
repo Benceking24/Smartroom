@@ -3,6 +3,7 @@ $( document ).ready(function() {
 	var SmartRoomSocket = new WebSocket("ws://192.168.10.66:8080");
 	SmartRoomSocket.onopen = function (event) {
 	SmartRoomSocket.onmessage = function (event) {
+		console.log(event.data);
 		var JSONdata = JSON.parse(event.data);
 		console.log(JSONdata)
 		switch(JSONdata["topic"])

@@ -22,8 +22,8 @@
 						<span class="checkmark2"></span>
 					</label>
 					
-					<label class="container2">TV
-						<input type="checkbox" class="switch" value="Neumann/SmartRoom/Livingroom/TV;">
+					<label class="container2">Fűtés
+						<input type="checkbox" class="switch" value="Neumann/SmartRoom/Livingroom/heater;">
 						<span class="checkmark2"></span>
 					</label>
 					
@@ -38,12 +38,12 @@
 					</label>
 					
 					<label class="container2">Ajtózár
-						<input type="checkbox" class="switch" value="Neumann/SmartRoom/Livingroom/Doorlock;">
+						<input type="checkbox" class="switch" value="Neumann/SmartRoom/Frontyard/Doorlock;">
 						<span class="checkmark2"></span>
 					</label>
 					
 					<label class="container2">Locsoló
-						<input type="checkbox" class="switch" value="Neumann/SmartRoom/Livingroom/Sprinkler;">
+						<input type="checkbox" class="switch" value="Neumann/SmartRoom/Frontyard/Sprinkler;">
 						<span class="checkmark2"></span>
 					</label>
 				
@@ -52,30 +52,32 @@
 				<a style="font-size:26px">Bent</a>
 				<br>
 				<label class="adatok2">hőmérséklet 
-				<span class="adat2">22°C<img src="hom.png"class="icon" alt="hőm"></span>
+				<label class="adat2"><span  id="hombent">22</span>°C<img src="hom.png"class="icon" alt="hőm"></label>
 				</label>
 				<br>
 				<label class="adatok2">páratartalom
-				<span class="adat2">21%<img src="para.png" class="icon"alt="pára"></span>
+				<label class="adat2"><span  id="parabent">21</span>%<img src="para.png" class="icon"alt="pára"></label>
 				</label>
 				<br>
 				<hr>
 				<a style="font-size:26px">Kint</a>
 				<br>
 				<label class="adatok2">hőmérséklet
-				<span class="adat2">18°C <img src="hom.png"class="icon" alt="hőm"></span>
+				<label class="adat2"><span id="homkint">18</span>°C <img src="hom.png"class="icon" alt="hőm"></label>
 				</label>
 				<br>
 				<label class="adatok2">páratartalom
-				<span class="adat2">82%<img src="para.png" class="icon" alt="pára"></span>
+				<label  class="adat2"><span id="parakint">82</span>%<img src="para.png" class="icon" alt="pára"></label>
 				</label>
 			</td>
-			<td style="vertical-align:top" class="logo" >
-				 <img src="logo.png" id="logo"> 
+			<td style="vertical-align:top" >
+			  Mozgás
+			  <br>
+			  <img src="move.png" id="move" >
+				 <img src="logo.png" id="logo" class="logo"> 
 			</td>
 		</tr>
 		<tr>
-			
 			
 			<td class="keret" id="redony" >
 				<div class="cim">Redőny</div>
@@ -101,26 +103,27 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="keret">
-				<div class="cim">Fűtés</div>
-				<div class="circle">
-				<div class="moving" ></div>
-				<label class="futes">
-					22°C
+			<td class="keret" style="vertical-align:top">
+				<div class="cim" >Fűtés</div>
+				
+				<label id="futes">
+					<span id="futertek">22</span>°C
+					<img src="plus.png" class="temp" id="plus">
+						
+					<img src="minus.png" class="temp" id="minus">
 				</label>
-				</div>
 			</td>
 			<td class="keret" >
 				<label class="adatok">CO2 szint
-					<span class="adat">0,5%</span>
+					<span class="adat" id="co2">Normál</span>
 				</label>
 				<br>
 				<label class="adatok">Földnedvesség
-				<span class="adat">82%</span>
+				<span class="adat" id="foldn">Nedves</span>
 				</label>
 				<br>
 				<label class="adatok">Eső
-				<span class="adat">Igen</span>
+				<span class="adat" id="eso">Igen</span>
 				</label>
 				<br>
 				<label class="adatok">Kuka
@@ -132,7 +135,7 @@
 			<td class="keret" id="hangulat-wrapper">
 				<div class="cim">Hangulatvilágítás</div>
 				
-				<img id="hangulat" src="piros.png"  alt="kek">
+				<img id="hangulat" src="nincs.png"  alt="világítás">
 				<form id="hangform" name="hangform" >
 				<label class="container">Kék
 					<input type="radio" name="color" id="blue"value="kek">
@@ -140,7 +143,7 @@
 				</label>
 				
 				<label class="container">Piros
-					<input type="radio" name="color" id="red" value="piros" checked>
+					<input type="radio" name="color" id="red" value="piros" >
 					<span class="checkmark"></span>
 				</label>
 				
@@ -150,7 +153,7 @@
 				</label>
 				
 				<label class="container">Nincs
-					<input type="radio" name="color" id="none" value="nincs">
+					<input type="radio" name="color" id="none" value="nincs" checked>
 					<span class="checkmark"></span>
 				</label>
 				</form>

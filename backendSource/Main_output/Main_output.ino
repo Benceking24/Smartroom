@@ -92,9 +92,7 @@ void Bool_Toggle(int PIN_Number,char* message){
       
 void Value_Change(int PIN_Number, char* message){
     int value = atoi(message);
-    Serial.println("kezdődik");
-    Serial.println(map(value,0,255,0,1024));
-        analogWrite(PIN_Number, value);
+    analogWrite(PIN_Number, map(value,0,255,0,1024));
 }
 
 void ErrorStream(char* ErrorDescription){

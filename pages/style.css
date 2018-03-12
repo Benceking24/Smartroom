@@ -91,6 +91,13 @@ table{
 	background-color: #fc5e6d;
 	
 }
+.temp{
+	width:50px;
+	float:right;
+	display: block;
+	position: relative;
+	margin-right: 10px;
+}
 .icon{
 	width: 50px;
 	display: block;
@@ -157,7 +164,7 @@ table{
 	cursor: pointer;
 }
 .checkmark2{
-	
+	margin-top:5px;
 	position: absolute;
 	top: 0;
 	left:80%;
@@ -171,6 +178,11 @@ table{
 	position:absolute;
 	display: none;
 }
+#move
+{
+	margin-top: 10px;
+	height:50px;
+}
 .container2 .checkmark2:after {
   top: 1.5px;
   left: 1.5px;
@@ -181,37 +193,13 @@ table{
 .container2 input:checked ~ .checkmark2:after {
   display: block;
 }
-.circle{
-	display:block;
-	position:relative;
-	top:0;
-	left:28%;
-    border-radius: 50%;
-    background: #181818;
-    background-clip: padding-box;
-	width: 174px;
-	height: 174px;
-	overflow: visible;
-	margin-top: 5px;
-	margin-bottom: 5px;
-	 
-}
-.circle:after{
-	 position: absolute;
-    top: -4px; bottom: -4px;
-    left: -4px; right: -4px;
-    background: linear-gradient(#fc5e6d, #fff3f4);
-    content: '';
-    z-index: -1;
-	border-radius: 50%;
-	}
-.futes{
+
+#futes{
+	margin-top:50px;
+	margin-left: 30px;
 	font-size:44px;
 	font-weight:bold;
 	display:block;
-	position:absolute;
-	top:35%;
-	left:28%;
 	background: -webkit-linear-gradient(#fc5e6d, #fff3f4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

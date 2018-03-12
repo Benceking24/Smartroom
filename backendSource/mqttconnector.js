@@ -29,14 +29,17 @@ client.on('message', function (topic, message) {
   }*/
 
 //ablak
+var ablak
+if (topic=='Neumann/SmartRoom/Livingroom/Shades'&&message>=98) {
+  console.log("A redÅ‘ny le van hÃºzva")
+}
+else{
+  client.publish("Neumann/SmartRoom/Livingroom/Window","")
+}
 
-/*if (topic=='Neumann/SmartRoom/Livingroom/Shades'&&message!=100) {
-  client
-}*/
 
 
-
-//Redõny
+//RedÃµny
 
 //client.on('message', function (topic, message) {
     // message is Buffer
@@ -46,14 +49,14 @@ client.on('message', function (topic, message) {
       client.publish('Neumann/SmartRoom/Livingroom/Shades','100')
     }
     else if (topic == 'Neumann/SmartRoom/Livingroom/Shades' && message >= 2) {
-        console.log("A redõny le van húzva")
+        console.log("A redÃµny le van hÃºzva")
     }
     else if (topic == 'Neumann/SmartRoom/Livingroom/Shades' && message <= 2) {
         client.publish("Neumann/SmartRoom/Livingroom/Window","")
     }
 
 
-//Tûz
+//TÃ»z
 
 //client.on('message', function (topic, message) {
 
@@ -73,7 +76,7 @@ client.on('message', function (topic, message) {
 })
 
 
-//alapkód
+//alapkÃ³d
 /*var mqtt = require('mqtt')
 var client = mqtt.connect('mqtt://test.mosquitto.org')
 

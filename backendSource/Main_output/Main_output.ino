@@ -91,10 +91,10 @@ void Bool_Toggle(int PIN_Number,char* message){
 }
       
 void Value_Change(int PIN_Number, char* message){
-    int value = message[0]-'0';
-    if(value<255 && value>0){
-        digitalWrite(PIN_Number, value);
-    }
+    int value = atoi(message);
+    Serial.println("kezdődik");
+    Serial.println(map(value,0,255,0,1024));
+        analogWrite(PIN_Number, value);
 }
 
 void ErrorStream(char* ErrorDescription){
@@ -138,7 +138,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
               servo.write(Livingroom_Window);
               delay(2000);
               servo.detach();
-        }
   }
   else if(strTopic == "Neumann/SmartRoom/Livingroom/Shades"){
       Value_Change(Livingroom_Shades_PIN, msg);
@@ -219,8 +218,8 @@ void setup() {
   pinMode(Livingroom_Mood_R_PIN, OUTPUT);
   pinMode(Livingroom_Mood_G_PIN, OUTPUT);
   pinMode(Livingroom_Mood_B_PIN, OUTPUT);
-  pinMode(Frontyard_Doorlock_PIN, OUTPUT);
-  pinMode(Frontyard_Sprinkler_PIN, OUTPUT);
+  //pinMode(Frontyard_Doorlock_PIN, OUTPUT);
+  //pinMode(Frontyard_Sprinkler_PIN, OUTPUT);
   setup_wifi();
   client.setServer(mqtt_server,mqttPort);
   client.setCallback(callback);

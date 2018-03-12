@@ -1,6 +1,6 @@
 #include<ESP8266WiFi.h>
 #include<PubSubClient.h>
-//#include <Servo.h>
+#include <Servo.h>
 
 //======  GPIO  ======//
 #define Livingroom_Lamp_1_PIN 16// D0 16
@@ -49,7 +49,7 @@ bool debug_mode = false;
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
-//Servo servo;
+Servo servo;
 long lastMsg = 0;
 char* msg;
 int value = 0;
@@ -129,12 +129,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
       Livingroom_Cooler = msg;
   }
   else if(strTopic == "Neumann/SmartRoom/Livingroom/Heater"){
-      Value_Change(Livingroom_Heater_PIN, msg);
+      Bool_Toggle(Livingroom_Heater_PIN, msg);
       Livingroom_Heater = msg[0]-'0';
   }
   else if(strTopic == "Neumann/SmartRoom/Livingroom/Window"){
       Livingroom_Window = msg[0]-'0';
-      if(Livingroom_Window>=0&&Livingroom_Window<=180){//servo.write(Livingroom_Window);
+        servo.attach(Livingroom_Window_PIN);
+              servo.write(Livingroom_Window);
+              delay(2000);
+              servo.detach();
         }
   }
   else if(strTopic == "Neumann/SmartRoom/Livingroom/Shades"){
@@ -212,17 +215,15 @@ void setup() {
   pinMode(Livingroom_Lamp_2_PIN, OUTPUT);
   pinMode(Livingroom_Cooler_PIN, OUTPUT);
   pinMode(Livingroom_Heater_PIN, OUTPUT);
-  pinMode(Livingroom_Window_PIN, OUTPUT);
   pinMode(Livingroom_Shades_PIN, OUTPUT);
   pinMode(Livingroom_Mood_R_PIN, OUTPUT);
   pinMode(Livingroom_Mood_G_PIN, OUTPUT);
   pinMode(Livingroom_Mood_B_PIN, OUTPUT);
-  /*pinMode(Frontyard_Doorlock_PIN, OUTPUT);
-  pinMode(Frontyard_Sprinkler_PIN, OUTPUT);*/
+  pinMode(Frontyard_Doorlock_PIN, OUTPUT);
+  pinMode(Frontyard_Sprinkler_PIN, OUTPUT);
   setup_wifi();
   client.setServer(mqtt_server,mqttPort);
   client.setCallback(callback);
-  //servo.attach(Livingroom_Window_PIN);
 }
 
 void loop() {

@@ -3,24 +3,26 @@ $( document ).ready(function() {
 	var SmartRoomSocket = new WebSocket("ws://192.168.10.66:8080");
 	SmartRoomSocket.onopen = function (event) {
 	SmartRoomSocket.onmessage = function (event) {
-		console.log(event.data);
-		
-		switch(event.data[0])
+		var JSONdata = JSON.parse(event.data);
+		console.log(JSONdata)
+		switch(JSONdata["topic"])
 		{
 			case "Neumann/SmartRoom/Livingroom/Temperature":
-				$("#hombent").text(event.data[1]);
+				console.log("rafut1");
+				$("#hombent").text(JSONdata["message"]);
 			break;
-			case "Neumann/SmartRoom/Livingroom/Humidity ":
-				$("#parabent").text(event.data[1]);
+			case "Neumann/SmartRoom/Livingroom/Humidity":
+			console.log("rafut2");
+				$("#parabent").text(JSONdata["message"]);
 			break;
-			case "Neumann/SmartRoom/Frontyard/Temperature ":
-				$("#homkint").text(event.data[1]);
+			case "Neumann/SmartRoom/Frontyard/Temperature":
+				$("#homkint").text(JSONdata["message"]);
 			break;
-			case "Neumann/SmartRoom/Frontyard/Humidity ":
-				$("#homkint").text(event.data[1]);
+			case "Neumann/SmartRoom/Frontyard/Humidity":
+				$("#parakint").text(JSONdata["message"]);
 			break;
-			case "Neumann/SmartRoom/Livingroom/Smoke ":
-				if(event.data[1].text()==0)
+			case "Neumann/SmartRoom/Livingroom/Smoke":
+				if(JSONdata["message"]==0)
 				{
 					$("#co2").text("Normál");
 				}else{
@@ -28,7 +30,7 @@ $( document ).ready(function() {
 				}
 			break;
 			case "Neumann/SmartRoom/Frontyard/Grass":
-				if(event.data[1].text()==0)
+				if(JSONdata["message"]==0)
 				{
 					$("#foldn").text("Száraz");
 				}else{
@@ -36,15 +38,15 @@ $( document ).ready(function() {
 				}
 			break;
 			case "Neumann/SmartRoom/Frontyard/Rain":
-				if(event.data[1].text()==0)
+				if(JSONdata["message"]==0)
 				{
-					$("#foldn").text("Nem");
+					$("#eso").text("Nem");
 				}else{
-					$("#foldn").text("Igen");
+					$("#eso").text("Igen");
 				}
 			break;
 			case "Neumann/SmartRoom/Frontyard/Grass":
-				if(event.data[1].text()==0)
+				if(JSONdata["message"]==0)
 				{
 					$("#foldn").text("Száraz");
 				}else{
@@ -52,14 +54,16 @@ $( document ).ready(function() {
 				}
 			break;
 			case "Neumann/SmartRoom/Livingroom/Motion":
-				if(event.data[1].text()==0)
+				if(JSONdata["message"]==0)
 				{
-					$("#move").src="stop.png";
+					$("#move").attr("src","stop.png");
 				}else{
-					$("#move").src="move.png";
+					$("#move").attr("src","move.png");
 				}
 			break;
-			
+			default:
+				console.log(event.data)
+			break;
 			
 			
 		}

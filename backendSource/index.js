@@ -174,8 +174,6 @@ client.on('message', function (topic, message) {
     }
 
 
-
-
     switch(topic){
       case "Neumann/SmartRoom/Livingroom/Temperature":
         Neumann_SmartRoom_Livingroom_Temperature=message;
@@ -263,9 +261,6 @@ ask("1=hőmérő adatátírás, 0=Visszaállítás", /.+/, function(name) {
             if (Neumann_SmartRoom_Livingroom_Heater==1) {
               Neumann_SmartRoom_Livingroom_Temperature++;
             }
-            
-            //TODO:
-            //megállítani, ha elérte a kívánt hőmérsékletet
         }
         setInterval(autoincrement, 5000);
     
@@ -288,6 +283,16 @@ ask("1=hőmérő adatátírás, 0=Visszaállítás", /.+/, function(name) {
       }
     }
     setInterval(Autolamp, 10000);
+    //TODO
+    //setInterval-okat feltételbe tenni
+    //pl lampoverwrite
+    //default=false
+    //false=nem overwrite
+    //true=overwrite
+    //ha a kliens felkapcsolva a lámpát, akkor az automatka funkció megáll
+    //de egy idő műlva újraindul -- globális változó pl : n000 --> n másodperc múlva újraindul
+    //a true-t false-ra állítja
+    //unsub a kiválasztott csatornákról
 
     function Autoshades() {
       if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 1) {
@@ -351,11 +356,22 @@ ask("1=hőmérő adatátírás, 0=Visszaállítás", /.+/, function(name) {
     setInterval(Autosprinkler,10000);
 
     function Autoriaszto() {
-        if (Neumann_SmartRoom_Frontyard_Doorlock==1 && Neumann_SmartRoom_Livingroom_Motion==1) {
-            client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
-            client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
-            console.log("A riasztó riaszt");
-        }
+      if (Neumann_SmartRoom_Frontyard_Doorlock==1 && Neumann_SmartRoom_Livingroom_Motion==1) {
+          client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
+          client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
+          console.log("A riasztó riaszt");
+          setInterval(function(){ 
+            console.log("on");
+            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
+          }, 3000);
+          setTimeout(function (){
+            setInterval(function(){ 
+            console.log("off");
+              client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+            }, 3000);
+          }, 1000);
+            
+      }
     }
     setInterval(Autoriaszto,10000);
 

@@ -19,10 +19,15 @@ let gws=undefined
     var Neumann_SmartRoom_Frontyard_Grass;
     var Neumann_SmartRoom_Frontyard_Rain;
 
-    var Neumann_SmartRoom_Livingroom_Heater; //thermostat
-    var Neumann_SmartRoom_Livingroom_heater; //fűtőszál
-    var Neumann_SmartRoom_Livingroom_Window;
-    var Neumann_SmartRoom_Livingroom_Shades;
+    var Neumann_SmartRoom_Livingroom_Heater; //fűtőszál
+    var Neumann_SmartRoom_Livingroom_heater=22; //thermostat
+    var Neumann_SmartRoom_Livingroom_Window=0;
+    var Neumann_SmartRoom_Livingroom_Shades=0;
+    var Neumann_SmartRoom_Frontyard_Doorlock=0;
+    var Neumann_SmartRoom_Frontyard_Sprinkler;
+
+
+    
 
 wss.on('connection', function connection(ws) {
     console.log('connected');
@@ -50,22 +55,21 @@ wss.on('connection', function connection(ws) {
 
         case "Neumann/SmartRoom/Livingroom/Window":
           Neumann_SmartRoom_Livingroom_Window=parseInt(res[1]);
-          if (Neumann_SmartRoom_Livingroom_Shades>1) {
-            console.log("warning 1");
-          }
-          else if (Neumann_SmartRoom_Livingroom_Shades==0) {
+          if (Neumann_SmartRoom_Livingroom_Shades==0) {
             client.publish(res[0],res[1]);
+          }
+          else if (Neumann_SmartRoom_Livingroom_Shades>1) {
+            console.log("A redőnyt nem lehet lehúzni");
           }
             break;
 
         case "Neumann/SmartRoom/Livingroom/Shades":
           Neumann_SmartRoom_Livingroom_Shades=parseInt(res[1]);
-          console.log(Neumann_SmartRoom_Livingroom_Shades==0);
           if (Neumann_SmartRoom_Livingroom_Window==0) {
             client.publish(res[0],res[1]);
           }
           else if (Neumann_SmartRoom_Livingroom_Window>=1) {
-            console.log("no can do");
+            console.log("Az ablakon nem lehet kinyitni");
           }
 
             break;
@@ -104,21 +108,21 @@ wss.on('connection', function connection(ws) {
             break;
 
         case "Neumann/SmartRoom/Frontyard/Doorlock":
+            Neumann_SmartRoom_Frontyard_Doorlock=parseInt(res[1]);
             client.publish(res[0], res[1]);
             break;
 
         case "Neumann/SmartRoom/Frontyard/Sprinkler":
-            if ("Neumann/SmartRoom/Frontyard/Grass" == 0) {
-                client.publish(res[0], res[1]);
-            }
+            Neumann_SmartRoom_Frontyard_Sprinkler=parseInt(res[1]);
+            client.publish(res[0],res[1]);
             break;
 
-            case "Neumann/SmartRoom/Livingroom/heater":
+            case "Neumann/SmartRoom/Livingroom/Heater":
               client.publish(res[0], res[1]);
             break;
 
-        case "Neumann/SmartRoom/Livingroom/Heater":
-            Neumann_SmartRoom_Livingroom_Heater=parseInt(res[1]);
+        case "Neumann/SmartRoom/Livingroom/heater":
+            Neumann_SmartRoom_Livingroom_heater=parseInt(res[1]);
             break;
         default:
             console.log("Topic nem létezik");
@@ -158,12 +162,9 @@ client.on('connect', function () {
 })
 
 
-
-
 client.on('message', function (topic, message) {
     //console.log(message);     
-    console.log(topic.toString());
-    console.log(message.toString());
+    console.log(topic.toString()+" "+message.toString());
     var values={
       "topic":topic.toString(), 
       "message":message.toString()
@@ -232,9 +233,71 @@ client.on('message', function (topic, message) {
 
 
     //---------------------------------------automatizáció-------------------------------------------
+    /*.log("1=fűtőszál bekapcsolása");
+    var stdin=process.openStdin();//hőmérséklet
+    stdin.addListener("data",function(d){
+        console.log(parseInt(d));
+    })
+
+    var ideiglenes=0;//fűtőszál
+    var idg2=22;//beállított érték
+    function autoincrease() {
+        if (stdin==1) {
+          client.publish("Neumann/SmartRoom/Livingroom/Heater","1");
+        }
+        else if (stdin==0) {
+           client.publish("Neumann/SmartRoom/Livingroom/Heater","0");
+        }
+        while(Neumann_SmartRoom_Livingroom_heater==1&&stdin<Neumann_SmartRoom_Livingroom_Heater){
+           ideiglenes++;
+        }
+        console.log("ideiglenes "+d);
+    }
+    setInterval(autoincrease,5000);*/
     
+    function ask(question, format, callback) {
+ var stdin = process.stdin, stdout = process.stdout;
+ 
+ stdin.resume();
+ stdout.write(question + ": ");
+ 
+ stdin.once('data', function(data) {
+   data = data.toString().trim();
+ 
+   if (format.test(data)) {
+     callback(data);
+   } else {
+     stdout.write("It should match: "+ format +"\n");
+     ask(question, format, callback);
+   }
+ });
 
+}
+ask("1=hőmérő adatátírás, 0=Visszaállítás", /.+/, function(name) {
+  
+  ask("temp", /^.+$/, function(Temp) {
+    if (name=="1") {
+    client.unsubscribe("Neumann/SmartRoom/Livingroom/Temperature");
+    Neumann_SmartRoom_Livingroom_Temperature=Temp;
+    function autoincrement(){
+            Neumann_SmartRoom_Livingroom_Temperature++;
+            //TODO:
+            //eldobni, ha elérte a kívánt hőmérsékletet
+        }
+        setInterval(autoincrement, 5000);
+    
+    }
+        else if (name="0") {
+        client.subscribe("Neumann/SmartRoom/Livingroom/Temperature");
+    }
+    Temp=parseInt(Temp);
+    console.log("jelszó: ", name);
+    console.log("hőm:", Temp);
 
+  });
+});
+
+//console.log(ask.data);
     function Autolamp() {
       //console.log("hello!");
       if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 0) {
@@ -256,22 +319,25 @@ client.on('message', function (topic, message) {
     setInterval(Autoshades,10000);
 
     function Autotemp(){
-      if (Neumann_SmartRoom_Livingroom_Heater==Neumann_SmartRoom_Livingroom_Temperature) {
+      if (Neumann_SmartRoom_Livingroom_heater==Neumann_SmartRoom_Livingroom_Temperature) {
         client.publish("Neumann/SmartRoom/Livingroom/Heater","0");
         client.publish("Neumann/SmartRoom/Livingroom/Cooler","0");
         console.log("Megfelelő hőmérséklet");
+        console.log(Neumann_SmartRoom_Livingroom_Temperature);
       }
 
-      if (Neumann_SmartRoom_Livingroom_Heater<Neumann_SmartRoom_Livingroom_Temperature) {
+      if (Neumann_SmartRoom_Livingroom_heater<Neumann_SmartRoom_Livingroom_Temperature) {
         client.publish("Neumann/SmartRoom/Livingroom/Heater","0");
         client.publish("Neumann/SmartRoom/Livingroom/Cooler","1");
         console.log("Hűtés bekapcsolva");
+        console.log(Neumann_SmartRoom_Livingroom_Temperature);
       }
 
-      if (Neumann_SmartRoom_Livingroom_Heater>Neumann_SmartRoom_Livingroom_Temperature) {
+      if (Neumann_SmartRoom_Livingroom_heater>Neumann_SmartRoom_Livingroom_Temperature) {
         client.publish("Neumann/SmartRoom/Livingroom/Heater","1");
         client.publish("Neumann/SmartRoom/Livingroom/Cooler","0");
         console.log("Fűtés bekapcsolva");
+        console.log(Neumann_SmartRoom_Livingroom_Temperature);
       }
     }
     setInterval(Autotemp,10000);
@@ -279,6 +345,7 @@ client.on('message', function (topic, message) {
     if (Neumann_SmartRoom_Livingroom_Window==0) {
       client.publish("Neumann/SmartRoom/Livingroom/Shades", Neumann_SmartRoom_Livingroom_Shades);
     }
+
 
     if (topic == "Neumann/SmartRoom/Frontyard/Grass" && message == "0") {
         client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
@@ -290,20 +357,24 @@ client.on('message', function (topic, message) {
       client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "0");
       console.log("locsolás off");
       }
+      if (Neumann_SmartRoom_Frontyard_Grass == 0) {
+        client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
+        console.log("locsolás on");
+      }
     }
     setInterval(Autosprinkler,10000);
     
-    if (topic == "Neumann/SmartRoom/Livingroom/Motion" && message == "1") {
-        client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
-        for (var i = 0; i < topic == "Neumann/SmartRoom/Livingroom/Motion" && message == "1" ; i++) {
-            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
-            client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "1");
-            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
-            client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
+    function Autoriaszto() {
+        if (Neumann_SmartRoom_Frontyard_Doorlock==1 && Neumann_SmartRoom_Livingroom_Motion==1) {
+            client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
+            client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
+            if (gws!==undefined) {
+                gws.send(JSON.stringify(values));
+             }
+            console.log("A riasztó riaszt");
         }
-        console.log("A riasztó riaszt.");
     }
+    setInterval(Autoriaszto,10000);
 
     if (topic =="Neumann/SmartRoom/Livingroom/Smoke" && message=="1") {
         client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
@@ -314,26 +385,4 @@ client.on('message', function (topic, message) {
         client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
         console.log("Füst");
     }
-
-
-    //távollét
-    /*if (true) {
-        client.publish("Neumann/SmartRoom/Frontyard/Doorlock", "1");
-        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
-    }*/
-
-    /*switch(homerseklet){
-      case hom=="Neumann/SmartRoom/Livingroom/Temperature":
-        client.publish("Neumann/SmartRoom/Livingroom/Heater","0");
-        client.publish("Neumann/SmartRoom/Livingroom/Cooler","0");
-      case hom>"Neumann/SmartRoom/Livingroom/Temperature":
-        client.publish("Neumann/SmartRoom/Livingroom/Heater","1");
-        client.publish("Neumann/SmartRoom/Livingroom/Cooler","0");
-      case hom<"Neumann/SmartRoom/Livingroom/Temperature":
-        client.publish("Neumann/SmartRoom/Livingroom/Heater","0");
-        client.publish("Neumann/SmartRoom/Livingroom/Cooler","1");
-    }*/
 })

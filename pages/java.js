@@ -1,6 +1,6 @@
 $( document ).ready(function() {
 
-	var SmartRoomSocket = new WebSocket("ws://192.168.10.66:8080");
+	var SmartRoomSocket = new WebSocket("ws://192.168.10.110:8080");
 	SmartRoomSocket.onopen = function (event) {
 	SmartRoomSocket.onmessage = function (event) {
 		console.log(event.data);
@@ -122,7 +122,7 @@ $( document ).ready(function() {
 		var ertek= parseInt($("#futertek").text());
 		if(ertek<30){
 			$("#futertek").text(ertek+1);
-			SmartRoomSocket.send("Neumann/SmartRoom/Livingroom/Heater; "+(ertek+1)); 
+			SmartRoomSocket.send("Neumann/SmartRoom/Livingroom/heater; "+(ertek+1)); 
 		}else
 		alert("nem lehet feljebb menni!");
 	});;
@@ -131,7 +131,7 @@ $( document ).ready(function() {
 		var ertek= parseInt($("#futertek").text());
 		if(ertek>10){
 			$("#futertek").text(ertek-1);
-			SmartRoomSocket.send("Neumann/SmartRoom/Livingroom/Heater; "+(ertek-1)); 
+			SmartRoomSocket.send("Neumann/SmartRoom/Livingroom/heater; "+(ertek-1)); 
 		}else
 		alert("nem lehet lejebb menni!");
 		

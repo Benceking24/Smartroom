@@ -76,10 +76,6 @@ void setup_wifi() {
 //======  Kimenetek feldolgozása  ======//
 void Bool_Toggle(int PIN_Number,char* message){
     int value = message[0]-'0';
-    Serial.println("value==0");
-    Serial.println(value==0);
-    Serial.println("value==1");
-    Serial.println(value==1);
 
     if(value==0){
         digitalWrite(PIN_Number, HIGH);
@@ -100,12 +96,10 @@ void ErrorStream(char* ErrorDescription){
 
 //======  Servo timing  ======//
 void servoMove (int destination, int L_PIN_Number, int R_PIN_Number){
-  Serial.println("servoMove started.");
   servoL.attach(L_PIN_Number);
   servoL.write(destination);
   servoR.attach(R_PIN_Number);
   servoR.write(180-destination);
-  Serial.println("servoMove runned!");
 }
 
 void servo_Update(int destination, int L_PIN_Number, int R_PIN_Number) {

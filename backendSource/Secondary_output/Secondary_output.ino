@@ -1,13 +1,14 @@
 #include<ESP8266WiFi.h>
 #include<PubSubClient.h>
 #include <Servo.h>
+#include <Stepper.h>
 
 //======  GPIO  ======//
 #define Frontyard_Sprinkler_PIN 16// D0 16
 #define Livingroom_Shades_1_PIN 5// D1 5
 #define Livingroom_Shades_2_PIN 4// D2 4
-#define Livingroom_Shades_1_PIN 0// D3 0
-#define Livingroom_Shades_1_PIN 2// D4 2
+#define Livingroom_Shades_3_PIN 0// D3 0
+#define Livingroom_Shades_4_PIN 2// D4 2
 #define Frontyard_Doorlock_PIN 14// D5 14 
 // D6 12
 // D7 13
@@ -23,6 +24,8 @@ int Livingroom_Shades;
 //======  Bejárat változók  ======//
 bool Frontyard_Doorlock;
 bool Frontyard_Sprinkler;
+const int stepsPerRevolution = 48;
+int stepCount = 0;
 unsigned long currentMilis = 0;
 unsigned long servo_Milis = 0;
 int servo_Interval = 1000;
@@ -43,8 +46,8 @@ bool debug_mode = false;
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
-Servo servoL;
-Servo servoR;
+Servo servo;
+Stepper stepper(stepsPerRevolution, Livingroom_Shades_1_PIN, Livingroom_Shades_2_PIN, Livingroom_Shades_3_PIN, Livingroom_Shades_4_PIN);
 long lastMsg = 0;
 char* msg;
 int value = 0;
@@ -95,18 +98,14 @@ void ErrorStream(char* ErrorDescription){
 }
 
 //======  Servo timing  ======//
-void servoMove (int destination, int L_PIN_Number, int R_PIN_Number){
-  Serial.println("servoMove started.");
-  servoL.attach(L_PIN_Number);
+void servoMove (int destination, int PIN_Number){
+  servoL.attach(PIN_Number);
   servoL.write(destination);
-  servoR.attach(R_PIN_Number);
-  servoR.write(180-destination);
-  Serial.println("servoMove runned!");
 }
 
-void servo_Update(int destination, int L_PIN_Number, int R_PIN_Number) {
+void servo_Update(int destination, int PIN_Number) {
   if (currentMilis - servo_Milis >= servo_Interval) {
-      servoMove(destination,L_PIN_Number,R_PIN_Number);
+      servoMove(destination, PIN_Number);
     servo_Milis += servo_Interval;
   }
 }
@@ -126,53 +125,27 @@ void callback(char* topic, byte* payload, unsigned int length) {
   String strTopic = String((char*)topic);
   msg = (char*)payload;
 
-  if(strTopic == "Neumann/SmartRoom/Livingroom/Lamp/1"){
-      if(msg[0]=='0'){msg[0]='1';}else if(msg[0]=='1'){msg[0]='0';}
-      Livingroom_Lamp_1 = msg[0];
-      Bool_Toggle(Livingroom_Lamp_1_PIN, msg);
-  }
-  else if(strTopic == "Neumann/SmartRoom/Livingroom/Lamp/2"){
-      
-      if(msg[0]=='0'){msg[0]='1';}else if(msg[0]='1'){msg[0]='0';}
-      Livingroom_Lamp_2 = msg[0];
-      Bool_Toggle(Livingroom_Lamp_2_PIN, msg);
-  }
-  else if(strTopic == "Neumann/SmartRoom/Livingroom/Cooler"){
-      Bool_Toggle(Livingroom_Cooler_PIN, msg);
-      Livingroom_Cooler = msg;
-  }
-  else if(strTopic == "Neumann/SmartRoom/Livingroom/Heater"){
-      Bool_Toggle(Livingroom_Heater_PIN, msg);
-      Livingroom_Heater = msg[0]-'0';
-  }
-  else if(strTopic == "Neumann/SmartRoom/Livingroom/Window"){
-      if(msg[0]=='0'){
-              Livingroom_Window = 15;
-        }
-        else if( msg[0]=='1'){
-            Livingroom_Window=165;
-          }
-              servo_Update(Livingroom_Window,Livingroom_Window_L_PIN,Livingroom_Window_R_PIN);
-  }
-  else if(strTopic == "Neumann/SmartRoom/Livingroom/Mood/R"){
-      Value_Change(Livingroom_Mood_R_PIN, msg);
-      Livingroom_Mood_R = msg[0]-'0';
-  }
-  else if(strTopic == "Neumann/SmartRoom/Livingroom/Mood/G"){
-      Value_Change(Livingroom_Mood_G_PIN, msg);
-      Livingroom_Mood_G = msg[0]-'0';
-  }
-  else if(strTopic == "Neumann/SmartRoom/Livingroom/Mood/B"){
-      Value_Change(Livingroom_Mood_B_PIN, msg);
-      Livingroom_Mood_B = msg[0]-'0';
+  if(strTopic == "Neumann/SmartRoom/Livingroom/Shades"){
+      int destination = map(atoi(msg)),0,100,0,48);
+      int neededStep;
+      if(stepCount<destination){neededStep=stepCount-destination;}
+      else if(stepCount>destination){neededStep=destination-stepCount;}
+      servo.step(neededStep);            
   }
   else if(strTopic == "Neumann/SmartRoom/Frontyard/Doorlock"){
-      Bool_Toggle(Frontyard_Doorlock_PIN, msg);
-      Frontyard_Doorlock = msg;
+      if(msg[0]=='0'){
+                    Frontyard_Doorlock = 15;
+              }
+              else if( msg[0]=='1'){
+                  Frontyard_Doorlock=165;
+                }
+                    servo_Update(Frontyard_Doorlock,Frontyard_Doorlock_PIN);
+
   }
   else if(strTopic == "Neumann/SmartRoom/Frontyard/Sprinkler"){
+      if(msg[0]=='0'){msg[0]='1';}else if(msg[0]=='1'){msg[0]='0';}
+      Frontyard_Sprinkler = msg[0];
       Bool_Toggle(Frontyard_Sprinkler_PIN, msg);
-      Frontyard_Sprinkler = msg;
   }
   else{
     Serial.println("Unknown topic: ");
@@ -190,25 +163,11 @@ void reconnect() {
 
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
-      client.subscribe("Neumann/SmartRoom/Livingroom/Lamp/1");   
-      client.loop();
-      client.subscribe("Neumann/SmartRoom/Livingroom/Lamp/2");
-      client.loop();
-      client.subscribe("Neumann/SmartRoom/Livingroom/Cooler");
-      client.loop();
-      client.subscribe("Neumann/SmartRoom/Livingroom/Heater");
-      client.loop();
-      client.subscribe("Neumann/SmartRoom/Livingroom/Window");
-      client.loop();
-      client.subscribe("Neumann/SmartRoom/Livingroom/Mood/R");
-      client.loop();
-      client.subscribe("Neumann/SmartRoom/Livingroom/Mood/G");
-      client.loop();
-      client.subscribe("Neumann/SmartRoom/Livingroom/Mood/B");
-      client.loop();
-      client.subscribe("Neumann/SmartRoom/Frontyard/Doorlock");
+      client.subscribe("Neumann/SmartRoom/Livingroom/Shades");   
       client.loop();
       client.subscribe("Neumann/SmartRoom/Frontyard/Sprinkler");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Frontyard/Doorlock");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -224,11 +183,8 @@ void setup() {
   pinMode(Livingroom_Lamp_2_PIN, OUTPUT);
   pinMode(Livingroom_Cooler_PIN, OUTPUT);
   pinMode(Livingroom_Heater_PIN, OUTPUT);
-  pinMode(Livingroom_Window_L_PIN, OUTPUT);
-  pinMode(Livingroom_Window_R_PIN, OUTPUT);
-  pinMode(Livingroom_Mood_R_PIN, OUTPUT);
-  pinMode(Livingroom_Mood_G_PIN, OUTPUT);
-  pinMode(Livingroom_Mood_B_PIN, OUTPUT);
+  pinMode(Livingroom_Heater_PIN, OUTPUT);
+  pinMode(Livingroom_Heater_PIN, OUTPUT);
   setup_wifi();
   client.setServer(mqtt_server,mqttPort);
   client.setCallback(callback);

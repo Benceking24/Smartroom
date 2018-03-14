@@ -3,30 +3,26 @@
 #include <Servo.h>
 
 //======  GPIO  ======//
-#define Livingroom_Lamp_1_PIN 16// D0 16
-#define Livingroom_Lamp_2_PIN 5// D1 5
-#define Livingroom_Cooler_PIN 4// D2 4
-#define Livingroom_Heater_PIN 0// D3 0
-#define Livingroom_Window_L_PIN 2// D4 2
-#define Livingroom_Window_R_PIN 14// D5 14 
-#define Livingroom_Mood_R_PIN 12// D6 12
-#define Livingroom_Mood_G_PIN 13// D7 13
-#define Livingroom_Mood_B_PIN 15// D8 15
+#define Frontyard_Sprinkler_PIN 16// D0 16
+#define Livingroom_Shades_1_PIN 5// D1 5
+#define Livingroom_Shades_2_PIN 4// D2 4
+#define Livingroom_Shades_1_PIN 0// D3 0
+#define Livingroom_Shades_1_PIN 2// D4 2
+#define Frontyard_Doorlock_PIN 14// D5 14 
+// D6 12
+// D7 13
+// D8 15
 // RX 3
 // TX 1
 // SD2 9
 // SD3 10
 
 //======  Nappali változók  ======//  
-bool Livingroom_Lamp_1;
-bool Livingroom_Lamp_2;
-bool Livingroom_Cooler;
-int Livingroom_Window;
-int Livingroom_Heater;
 int Livingroom_Shades;
-int Livingroom_Mood_R;
-int Livingroom_Mood_G;
-int Livingroom_Mood_B;
+
+//======  Bejárat változók  ======//
+bool Frontyard_Doorlock;
+bool Frontyard_Sprinkler;
 unsigned long currentMilis = 0;
 unsigned long servo_Milis = 0;
 int servo_Interval = 1000;
@@ -117,14 +113,14 @@ void servo_Update(int destination, int L_PIN_Number, int R_PIN_Number) {
 
 //======  MQTT Callback  ======//
 void callback(char* topic, byte* payload, unsigned int length) {
-   /*DEBUG MODE
+   //DEBUG MODE
     Serial.print("Message arrived [");
     Serial.print(topic);
     Serial.print("] ");
     for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
     }
-    Serial.println();*/
+    Serial.println();
 
   payload[length] = '\0';
   String strTopic = String((char*)topic);
@@ -170,6 +166,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
       Value_Change(Livingroom_Mood_B_PIN, msg);
       Livingroom_Mood_B = msg[0]-'0';
   }
+  else if(strTopic == "Neumann/SmartRoom/Frontyard/Doorlock"){
+      Bool_Toggle(Frontyard_Doorlock_PIN, msg);
+      Frontyard_Doorlock = msg;
+  }
+  else if(strTopic == "Neumann/SmartRoom/Frontyard/Sprinkler"){
+      Bool_Toggle(Frontyard_Sprinkler_PIN, msg);
+      Frontyard_Sprinkler = msg;
+  }
   else{
     Serial.println("Unknown topic: ");
     Serial.print(strTopic);
@@ -201,6 +205,10 @@ void reconnect() {
       client.subscribe("Neumann/SmartRoom/Livingroom/Mood/G");
       client.loop();
       client.subscribe("Neumann/SmartRoom/Livingroom/Mood/B");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Frontyard/Doorlock");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Frontyard/Sprinkler");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());

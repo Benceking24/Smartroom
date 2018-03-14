@@ -7,15 +7,15 @@
 #define Livingroom_Lamp_2_PIN 5// D1 5
 #define Livingroom_Cooler_PIN 4// D2 4
 #define Livingroom_Heater_PIN 0// D3 0
-#define Livingroom_Window_PIN 2// D4 2
-#define Livingroom_Shades_PIN 14// D5 14 
+#define Livingroom_Window_L_PIN 2// D4 2
+#define Livingroom_Window_R_PIN 14// D5 14 
 #define Livingroom_Mood_R_PIN 12// D6 12
 #define Livingroom_Mood_G_PIN 13// D7 13
 #define Livingroom_Mood_B_PIN 15// D8 15
 // RX 3
 // TX 1
-#define Frontyard_Doorlock_PIN 9// SD2 9
-#define Frontyard_Sprinkler_PIN 10// SD3 10
+// SD2 9
+// SD3 10
 
 //======  Nappali változók  ======//  
 bool Livingroom_Lamp_1;
@@ -27,7 +27,9 @@ int Livingroom_Shades;
 int Livingroom_Mood_R;
 int Livingroom_Mood_G;
 int Livingroom_Mood_B;
-
+unsigned long currentMilis = 0;
+unsigned long servo_Milis = 0;
+int servo_Interval = 1000;
 
 //======  Bejárat változók  ======//
 bool Frontyard_Doorlock;
@@ -49,7 +51,8 @@ bool debug_mode = false;
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
-Servo servo;
+Servo servoL;
+Servo servoR;
 long lastMsg = 0;
 char* msg;
 int value = 0;
@@ -99,6 +102,23 @@ void ErrorStream(char* ErrorDescription){
     client.publish("Config_Error",ErrorDescription);
 }
 
+//======  Servo timing  ======//
+void servoMove (int destination, int L_PIN_Number, int R_PIN_Number){
+  Serial.println("servoMove started.");
+  servoL.attach(L_PIN_Number);
+  servoL.write(destination);
+  servoR.attach(R_PIN_Number);
+  servoR.write(180-destination);
+  Serial.println("servoMove runned!");
+}
+
+void servo_Update(int destination, int L_PIN_Number, int R_PIN_Number) {
+  if (currentMilis - servo_Milis >= servo_Interval) {
+      servoMove(destination,L_PIN_Number,R_PIN_Number);
+    servo_Milis += servo_Interval;
+  }
+}
+
 //======  MQTT Callback  ======//
 void callback(char* topic, byte* payload, unsigned int length) {
    //DEBUG MODE
@@ -115,12 +135,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
   msg = (char*)payload;
 
   if(strTopic == "Neumann/SmartRoom/Livingroom/Lamp/1"){
+      if(msg[0]=='0'){msg[0]='1';}else if(msg[0]=='1'){msg[0]='0';}
+      Livingroom_Lamp_1 = msg[0];
       Bool_Toggle(Livingroom_Lamp_1_PIN, msg);
-      Livingroom_Lamp_1 = msg;
   }
   else if(strTopic == "Neumann/SmartRoom/Livingroom/Lamp/2"){
+      
+      if(msg[0]=='0'){msg[0]='1';}else if(msg[0]='1'){msg[0]='0';}
+      Livingroom_Lamp_2 = msg[0];
       Bool_Toggle(Livingroom_Lamp_2_PIN, msg);
-      Livingroom_Lamp_2 = msg;
   }
   else if(strTopic == "Neumann/SmartRoom/Livingroom/Cooler"){
       Bool_Toggle(Livingroom_Cooler_PIN, msg);
@@ -131,15 +154,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
       Livingroom_Heater = msg[0]-'0';
   }
   else if(strTopic == "Neumann/SmartRoom/Livingroom/Window"){
-      Livingroom_Window = msg[0]-'0';
-        servo.attach(Livingroom_Window_PIN);
-              servo.write(Livingroom_Window);
-              delay(2000);
-              servo.detach();
-  }
-  else if(strTopic == "Neumann/SmartRoom/Livingroom/Shades"){
-      Value_Change(Livingroom_Shades_PIN, msg);
-      Livingroom_Shades = msg[0]-'0';
+      if(msg[0]=='0'){
+              Livingroom_Window = 15;
+        }
+        else if( msg[0]=='1'){
+            Livingroom_Window=165;
+          }
+              servo_Update(Livingroom_Window,Livingroom_Window_L_PIN,Livingroom_Window_R_PIN);
   }
   else if(strTopic == "Neumann/SmartRoom/Livingroom/Mood/R"){
       Value_Change(Livingroom_Mood_R_PIN, msg);
@@ -204,7 +225,6 @@ void reconnect() {
     }
   }
 }
-
 //======  Fő futás  ======//
 void setup() {
   Serial.begin(9600);
@@ -212,12 +232,11 @@ void setup() {
   pinMode(Livingroom_Lamp_2_PIN, OUTPUT);
   pinMode(Livingroom_Cooler_PIN, OUTPUT);
   pinMode(Livingroom_Heater_PIN, OUTPUT);
-  pinMode(Livingroom_Shades_PIN, OUTPUT);
+  pinMode(Livingroom_Window_L_PIN, OUTPUT);
+  pinMode(Livingroom_Window_R_PIN, OUTPUT);
   pinMode(Livingroom_Mood_R_PIN, OUTPUT);
   pinMode(Livingroom_Mood_G_PIN, OUTPUT);
   pinMode(Livingroom_Mood_B_PIN, OUTPUT);
-  //pinMode(Frontyard_Doorlock_PIN, OUTPUT);
-  //pinMode(Frontyard_Sprinkler_PIN, OUTPUT);
   setup_wifi();
   client.setServer(mqtt_server,mqttPort);
   client.setCallback(callback);
@@ -228,4 +247,5 @@ void loop() {
     reconnect();
     }
   client.loop();
+  currentMilis = millis();
 }

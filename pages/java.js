@@ -1,6 +1,6 @@
 $( document ).ready(function() {
 
-	var SmartRoomSocket = new WebSocket("ws://192.168.10.110:8080");
+	var SmartRoomSocket = new WebSocket("ws://192.168.10.95:8080");
 	SmartRoomSocket.onopen = function (event) {
 	SmartRoomSocket.onmessage = function (event) {
 		console.log(event.data);

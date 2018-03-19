@@ -4,17 +4,17 @@ var client = mqtt.connect('mqtt://iot.office.kibu.hu:1883')//iot.office.kibu.hu
 const wss = new WebSocket.Server({ port: 8080 });
 let gws=undefined
 
-    var Neumann_SmartRoom_Livingroom_Temperature;
-    var Neumann_SmartRoom_Livingroom_Humidity;
-    var Neumann_SmartRoom_Livingroom_Ambient;
-    var Neumann_SmartRoom_Livingroom_Smoke;
-    var Neumann_SmartRoom_Livingroom_Motion;
-    var Neumann_SmartRoom_Frontyard_Temperature;
-    var Neumann_SmartRoom_Frontyard_Humidity;
-    var Neumann_SmartRoom_Frontyard_Ambient;
-    var Neumann_SmartRoom_Frontyard_Motion;
-    var Neumann_SmartRoom_Frontyard_Grass;
-    var Neumann_SmartRoom_Frontyard_Rain;
+    var Neumann_SmartRoom_Livingroom_Temperature=0;
+    var Neumann_SmartRoom_Livingroom_Humidity=0;
+    var Neumann_SmartRoom_Livingroom_Ambient=0;
+    var Neumann_SmartRoom_Livingroom_Smoke=0;
+    var Neumann_SmartRoom_Livingroom_Motion=0;
+    var Neumann_SmartRoom_Frontyard_Temperature=0;
+    var Neumann_SmartRoom_Frontyard_Humidity=0;
+    var Neumann_SmartRoom_Frontyard_Ambient=0;
+    var Neumann_SmartRoom_Frontyard_Motion=0;
+    var Neumann_SmartRoom_Frontyard_Grass=0;
+    var Neumann_SmartRoom_Frontyard_Rain=0;
 
     var Neumann_SmartRoom_Livingroom_Heater=0; //fűtőszál,1=on, 0=off
     var Neumann_SmartRoom_Livingroom_heater=22; //thermostat hőmérséklete
@@ -89,6 +89,178 @@ let gws=undefined
 		}
 	}
 	setInterval(windowbool,10000);
+
+
+setInterval(function () {
+        client.unsubscribe("Neumann/SmartRoom/Livingroom/Temperature");
+        var Temp=Neumann_SmartRoom_Livingroom_Temperature;
+        Neumann_SmartRoom_Livingroom_Temperature+=5;
+      console.log(Neumann_SmartRoom_Livingroom_Temperature+" németország");
+        setTimeout(function () {
+          client.subscribe("Neumann/SmartRoom/Livingroom/Temperature");
+          console.log("feliratkozva");
+          Neumann_SmartRoom_Livingroom_Temperature=Temp;
+          /*switch(topic){
+          case "Neumann/SmartRoom/Livingroom/Temperature":
+          Neumann_SmartRoom_Livingroom_Temperature=message;
+          Neumann_SmartRoom_Livingroom_Temperature=Math.round(Neumann_SmartRoom_Livingroom_Temperature,1);
+          console.log(Neumann_SmartRoom_Livingroom_Temperature);
+          break;}*/
+        }
+        ,10000);
+    },15000)
+
+    function Autolamp() {
+      if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 0) {
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "1");
+        console.log("Lámpák felkapcsolva");
+      }
+    }
+    //setInterval(Autolamp, 10000);
+    //TODO
+    //setInterval-okat feltételbe tenni
+    //pl lampoverwrite
+    //default=false
+    //false=nem overwrite
+    //true=overwrite
+    //ha a kliens felkapcsolva a lámpát, akkor az automatka funkció megáll
+    //de egy idő műlva újraindul -- globális változó pl : n000 --> n másodperc múlva újraindul
+    //a true-t false-ra állítja
+    //unsub a kiválasztott csatornákról
+
+    function Autoshades() {
+    if(manualshades==false){
+      if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 1) {
+      client.publish("Neumann/SmartRoom/Livingroom/Shades", "100");
+      client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+      client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
+      console.log("fényes van, redőny felhúzva, lámpák kikapcsolva");
+      }
+    }
+    }
+    //setInterval(Autoshades,10000);
+
+    function Autotemp(){
+    if(manualtemp==false){
+      if (Neumann_SmartRoom_Livingroom_heater+1<Neumann_SmartRoom_Livingroom_Temperature) {
+      client.publish("Neumann/SmartRoom/Livingroom/Heater","0");
+      client.publish("Neumann/SmartRoom/Livingroom/Cooler","1");
+      Neumann_SmartRoom_Livingroom_Heater=0;
+      console.log("Hűtés bekapcsolva");
+      console.log(Neumann_SmartRoom_Livingroom_Temperature);
+      }
+      else{
+      if (Neumann_SmartRoom_Livingroom_heater-1>Neumann_SmartRoom_Livingroom_Temperature) {
+        client.publish("Neumann/SmartRoom/Livingroom/Heater","1");
+        client.publish("Neumann/SmartRoom/Livingroom/Cooler","0");
+        Neumann_SmartRoom_Livingroom_Heater=1;
+        console.log("Fűtés bekapcsolva");
+        console.log(Neumann_SmartRoom_Livingroom_Temperature);
+      }
+      else{
+        client.publish("Neumann/SmartRoom/Livingroom/Heater","0");
+        client.publish("Neumann/SmartRoom/Livingroom/Cooler","0");
+        Neumann_SmartRoom_Livingroom_Heater=0;
+        console.log("Megfelelő hőmérséklet");
+        console.log(Neumann_SmartRoom_Livingroom_Temperature);
+      }
+      }
+    }
+    }
+    //setInterval(Autotemp,10000);
+
+    if (Neumann_SmartRoom_Livingroom_Window==0) {
+      client.publish("Neumann/SmartRoom/Livingroom/Shades", Neumann_SmartRoom_Livingroom_Shades);
+    }
+
+
+    /*if (topic == "Neumann/SmartRoom/Frontyard/Grass" && message == "0") {
+        client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
+        console.log("locsolás on");
+    }*/
+
+    function Autosprinkler() {
+    if(manualsprinkler==false){
+      if (Neumann_SmartRoom_Frontyard_Grass == 1 || Neumann_SmartRoom_Frontyard_Rain == 1) {
+        client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "0");
+        console.log("locsolás off");
+      }
+
+      if (Neumann_SmartRoom_Frontyard_Grass == 0) {
+        client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
+        console.log("locsolás on");
+
+        setInterval(function(){ 
+            console.log("on");
+            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
+          }, 3000);
+          setTimeout(function (){
+            setInterval(function(){ 
+              console.log("off");
+              client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+            }, 3000);
+          }, 1000);
+          
+      }
+    }
+    }
+    //setInterval(Autosprinkler,10000);
+
+    function Autoriaszto() {
+      if (Neumann_SmartRoom_Frontyard_Doorlock==1 && Neumann_SmartRoom_Livingroom_Motion==1) {
+          client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
+          client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
+          console.log("A riasztó riaszt");
+          setInterval(function(){ 
+            console.log("on");
+            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
+          }, 3000);
+          setTimeout(function (){
+            setInterval(function(){ 
+              console.log("off");
+              client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+            }, 3000);
+          }, 2000);
+            
+      }
+    }
+    //setInterval(Autoriaszto,10000);
+
+    function tavollet() {
+      if (Neumann_SmartRoom_Frontyard_Doorlock==1) {
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Mood/R", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Mood/G", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Mood/B", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
+      }
+    }
+    //setInterval(tavollet,10000);
+
+    function Autofust() {
+      if (Neumann_SmartRoom_Livingroom_Smoke==1) {
+        client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Heater", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Cooler", "100");
+        client.publish("Neumann/SmartRoom/Frontyard/Doorlock", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
+        console.log("Füst");
+      }
+    }
+
+
+
+  setInterval(Autolamp, 10000);
+  setInterval(Autoshades,10000);
+  setInterval(Autotemp,10000);
+  setInterval(Autosprinkler,10000);
+  setInterval(Autoriaszto,10000);
+  setInterval(tavollet,10000);
+  setInterval(Autofust,10000);
     
 
 wss.on('connection', function connection(ws) {
@@ -339,7 +511,6 @@ client.on('message', function (topic, message) {
     }
     
     //client.publish(res[0]+res[1]);
-    //webkliens
     //source:https://www.w3schools.com/jsref/jsref_switch.asp
 
 
@@ -403,155 +574,7 @@ ask("1=hőmérő adatátírás, 0=Visszaállítás", /.+/, function(name) {
     }
     setInterval(debughom,30000);*/
 
-    setInterval(function () {
-        client.unsubscribe("Neumann/SmartRoom/Livingroom/Temperature");
-        var Temp=Neumann_SmartRoom_Livingroom_Temperature;
-        Neumann_SmartRoom_Livingroom_Temperature+=5;
-      console.log(Neumann_SmartRoom_Livingroom_Temperature+" németország");
-        setTimeout(function () {
-          client.subscribe("Neumann/SmartRoom/Livingroom/Temperature");
-          console.log("feliratkozva");
-          Neumann_SmartRoom_Livingroom_Temperature=Temp;
-          /*switch(topic){
-          case "Neumann/SmartRoom/Livingroom/Temperature":
-          Neumann_SmartRoom_Livingroom_Temperature=message;
-          Neumann_SmartRoom_Livingroom_Temperature=Math.round(Neumann_SmartRoom_Livingroom_Temperature,1);
-          console.log(Neumann_SmartRoom_Livingroom_Temperature);
-          break;}*/
-        }
-        ,10000);
-    },15000)
-
-    function Autolamp() {
-      if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 0) {
-        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
-        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "1");
-        console.log("Lámpák felkapcsolva");
-      }
-    }
-    setInterval(Autolamp, 10000);
-    //TODO
-    //setInterval-okat feltételbe tenni
-    //pl lampoverwrite
-    //default=false
-    //false=nem overwrite
-    //true=overwrite
-    //ha a kliens felkapcsolva a lámpát, akkor az automatka funkció megáll
-    //de egy idő műlva újraindul -- globális változó pl : n000 --> n másodperc múlva újraindul
-    //a true-t false-ra állítja
-    //unsub a kiválasztott csatornákról
-
-    function Autoshades() {
-		if(manualshades==false){
-			if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 1) {
-			client.publish("Neumann/SmartRoom/Livingroom/Shades", "100");
-			client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
-			client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
-			console.log("fényes van, redőny felhúzva, lámpák kikapcsolva");
-			}
-		}
-    }
-    setInterval(Autoshades,10000);
-
-    function Autotemp(){
-		if(manualtemp==false){
-		  if (Neumann_SmartRoom_Livingroom_heater+1<Neumann_SmartRoom_Livingroom_Temperature) {
-			client.publish("Neumann/SmartRoom/Livingroom/Heater","0");
-			client.publish("Neumann/SmartRoom/Livingroom/Cooler","1");
-			Neumann_SmartRoom_Livingroom_Heater=0;
-			console.log("Hűtés bekapcsolva");
-			console.log(Neumann_SmartRoom_Livingroom_Temperature);
-		  }
-		  else{
-			if (Neumann_SmartRoom_Livingroom_heater-1>Neumann_SmartRoom_Livingroom_Temperature) {
-				client.publish("Neumann/SmartRoom/Livingroom/Heater","1");
-				client.publish("Neumann/SmartRoom/Livingroom/Cooler","0");
-				Neumann_SmartRoom_Livingroom_Heater=1;
-				console.log("Fűtés bekapcsolva");
-				console.log(Neumann_SmartRoom_Livingroom_Temperature);
-			}
-			else{
-				client.publish("Neumann/SmartRoom/Livingroom/Heater","0");
-				client.publish("Neumann/SmartRoom/Livingroom/Cooler","0");
-				Neumann_SmartRoom_Livingroom_Heater=0;
-				console.log("Megfelelő hőmérséklet");
-				console.log(Neumann_SmartRoom_Livingroom_Temperature);
-			}
-		  }
-		}
-    }
-    setInterval(Autotemp,10000);
-
-    if (Neumann_SmartRoom_Livingroom_Window==0) {
-      client.publish("Neumann/SmartRoom/Livingroom/Shades", Neumann_SmartRoom_Livingroom_Shades);
-    }
-
-
-    /*if (topic == "Neumann/SmartRoom/Frontyard/Grass" && message == "0") {
-        client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
-        console.log("locsolás on");
-    }*/
-
-    function Autosprinkler() {
-		if(manualsprinkler==false){
-			if (Neumann_SmartRoom_Frontyard_Grass == 1 || Neumann_SmartRoom_Frontyard_Rain == 1) {
-				client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "0");
-				console.log("locsolás off");
-			}
-
-			if (Neumann_SmartRoom_Frontyard_Grass == 0) {
-				client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
-				console.log("locsolás on");
-          
-			}
-		}
-    }
-    setInterval(Autosprinkler,10000);
-
-    function Autoriaszto() {
-      if (Neumann_SmartRoom_Frontyard_Doorlock==1 && Neumann_SmartRoom_Livingroom_Motion==1) {
-          client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
-          client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
-          console.log("A riasztó riaszt");
-          setInterval(function(){ 
-            console.log("on");
-            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
-          }, 3000);
-          setTimeout(function (){
-            setInterval(function(){ 
-              console.log("off");
-              client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
-            }, 3000);
-          }, 1000);
-            
-      }
-    }
-    setInterval(Autoriaszto,10000);
-
-    function tavollet() {
-      if (Neumann_SmartRoom_Frontyard_Doorlock==1) {
-        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Mood/R", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Mood/G", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Mood/B", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
-      }
-    }
-    setInterval(tavollet,10000);
-
-    function Autofust() {
-      if (Neumann_SmartRoom_Livingroom_Smoke==1) {
-        client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Heater", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Cooler", "100");
-        client.publish("Neumann/SmartRoom/Frontyard/Doorlock", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
-        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
-        console.log("Füst");
-      }
-    }
-    setInterval(Autofust,10000);
+    
+    //setInterval(Autofust,10000);
     
 })

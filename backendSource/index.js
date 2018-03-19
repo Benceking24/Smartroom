@@ -528,6 +528,19 @@ ask("1=hőmérő adatátírás, 0=Visszaállítás", /.+/, function(name) {
     }
     setInterval(Autoriaszto,10000);
 
+    function tavollet() {
+      if (Neumann_SmartRoom_Frontyard_Doorlock==1) {
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Mood/R", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Mood/G", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Mood/B", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
+        client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
+      }
+    }
+    setInterval(tavollet,10000);
+
     function Autofust() {
       if (Neumann_SmartRoom_Livingroom_Smoke==1) {
         client.publish("Neumann/SmartRoom/Livingroom/Window", "0");

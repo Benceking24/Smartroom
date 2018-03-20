@@ -180,49 +180,80 @@ setInterval(function () {
         console.log("locsolás on");
     }*/
 
+    var reID=undefined;
+    var reID2=undefined;
+    var reID3=undefined;
+
+    function setIntervalforreID() {
+      reID=setInterval(function(){ 
+            console.log("on+1");
+            client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
+          }, 3000);
+      reID3=setTimeout(function () {
+       reID2=setInterval(function(){ 
+              console.log("off+1");
+              client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "0");
+            }, 3000);
+      },1000);
+      
+    }
+
+    function clearIntervalforreID() {
+      clearInterval(reID);
+      clearInterval(reID2);
+      clearTimeout(reID3);
+    }
+
     function Autosprinkler() {
     if(manualsprinkler==false){
       if (Neumann_SmartRoom_Frontyard_Grass == 1 || Neumann_SmartRoom_Frontyard_Rain == 1) {
         client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "0");
         console.log("locsolás off");
+        clearIntervalforreID();
       }
 
       if (Neumann_SmartRoom_Frontyard_Grass == 0) {
-        client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
+        //client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
         console.log("locsolás on");
-
-        setInterval(function(){ 
-            console.log("on");
-            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
-          }, 3000);
-          setTimeout(function (){
-            setInterval(function(){ 
-              console.log("off");
-              client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
-            }, 3000);
-          }, 1000);
-          
+        setIntervalforreID();
       }
     }
     }
     //setInterval(Autosprinkler,10000);
+
+  var alarm=undefined;
+  var alarm2=undefined;
+  var alarm3=undefined;
+
+  function setIntervalforalarm() {
+      reID=setInterval(function(){ 
+            console.log("on+1");
+            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
+          }, 3000);
+      reID3=setTimeout(function () {
+       reID2=setInterval(function(){ 
+              console.log("off+1");
+              client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+            }, 3000);
+      },1000);
+      
+    }
+
+    function clearIntervalforalarm() {
+      clearInterval(alarm);
+      clearInterval(alarm2);
+      clearTimeout(alarm3);
+    }
 
     function Autoriaszto() {
       if (Neumann_SmartRoom_Frontyard_Doorlock==1 && Neumann_SmartRoom_Livingroom_Motion==1) {
           client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
           client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
           console.log("A riasztó riaszt");
-          setInterval(function(){ 
-            console.log("on");
-            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
-          }, 3000);
-          setTimeout(function (){
-            setInterval(function(){ 
-              console.log("off");
-              client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
-            }, 3000);
-          }, 2000);
-            
+          setIntervalforalarm();
+      }
+      if (Neumann_SmartRoom_Frontyard_Doorlock==0) {
+        clearIntervalforalarm();
       }
     }
     //setInterval(Autoriaszto,10000);
@@ -377,9 +408,22 @@ wss.on('connection', function connection(ws) {
 
         case "Neumann/SmartRoom/Frontyard/Sprinkler":
             Neumann_SmartRoom_Frontyard_Sprinkler=parseInt(res[1]);
-			manualsprinkler=true;
+			      manualsprinkler=true;
             client.publish(res[0],res[1]);
-            break;
+            if (Neumann_SmartRoom_Frontyard_Sprinkler==0) {console.log("valami amerika")}
+            /*if (Neumann_SmartRoom_Frontyard_Sprinkler==1) {
+              setInterval(function(){ 
+                  console.log("on-2");
+                  client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
+                }, 3000);
+                setTimeout(function (){
+                  setInterval(function(){ 
+                    console.log("off-2");
+                    client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+                  }, 3000);
+                }, 1000);
+            }*/
+          break;
 
         case "Neumann/SmartRoom/Livingroom/Heater":
 			   Neumann_SmartRoom_Livingroom_Heater=parseInt(res[1]);

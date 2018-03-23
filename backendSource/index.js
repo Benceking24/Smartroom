@@ -111,11 +111,20 @@ setInterval(function () {
     },180000)
 
     function Autolamp() {
-      if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 0) {
-        client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
-        client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "1");
-        console.log("Lámpák felkapcsolva");
+      if (manuallamp==false) {
+        if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 0 && Neumann_SmartRoom_Livingroom_Motion==1) {
+          client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
+          client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "1");
+          console.log("Lámpák felkapcsolva");
+        }
+        if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 0 && Neumann_SmartRoom_Livingroom_Motion==0) {
+          setTimeout(function(){
+            client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
+          client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
+          },5000);
+        }
       }
+      
     }
     //setInterval(Autolamp, 10000);
     //TODO

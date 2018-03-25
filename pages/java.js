@@ -1,6 +1,6 @@
 $( document ).ready(function() {
 
-	var SmartRoomSocket = new WebSocket("ws://192.168.10.94:8080");
+	var SmartRoomSocket = new WebSocket("ws://192.168.10.67:8080");
 	SmartRoomSocket.onopen = function (event) {
 	SmartRoomSocket.onmessage = function (event) {
 		console.log(event.data);
@@ -62,6 +62,19 @@ $( document ).ready(function() {
 					$("#move").attr("src","move.png");
 				}
 			break;
+                
+            case "Neumann/SmartRoom/Livingroom/Lamp/1":
+				if(JSONdata["message"]==1)
+				{
+    document.getElementById("Neumann/SmartRoom/Livingroom/Lamp/1; ").checked = true;
+				}else{
+    document.getElementById("Neumann/SmartRoom/Livingroom/Lamp/1; ").checked = false;
+				}
+			break;
+                
+                
+                
+                
 			default:
 				console.log(event.data)
 			break;
@@ -137,8 +150,4 @@ $( document ).ready(function() {
 		
 			
 	});;
-	
-    
-
-	//192.168.10.110
 });

@@ -513,7 +513,7 @@ let gws=undefined
   setInterval(Autosprinkler,10000);
   setInterval(Autoriaszto,10000);
   setInterval(tavollet,10000);
-  setInterval(Autofust,10000);
+  //setInterval(Autofust,10000);
     
 
 

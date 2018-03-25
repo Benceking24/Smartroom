@@ -99,8 +99,8 @@ void ErrorStream(char* ErrorDescription){
 
 //======  Servo timing  ======//
 void servoMove (int destination, int PIN_Number){
-  servoL.attach(PIN_Number);
-  servoL.write(destination);
+  servo.attach(PIN_Number);
+  servo.write(destination);
 }
 
 void servo_Update(int destination, int PIN_Number) {
@@ -126,11 +126,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
   msg = (char*)payload;
 
   if(strTopic == "Neumann/SmartRoom/Livingroom/Shades"){
-      int destination = map(atoi(msg)),0,100,0,48);
+      int destination = map(atoi(msg),0,100,0,48);
       int neededStep;
       if(stepCount<destination){neededStep=stepCount-destination;}
       else if(stepCount>destination){neededStep=destination-stepCount;}
-      servo.step(neededStep);            
+      stepper.step(neededStep);            
   }
   else if(strTopic == "Neumann/SmartRoom/Frontyard/Doorlock"){
       if(msg[0]=='0'){
@@ -179,12 +179,12 @@ void reconnect() {
 //======  Fő futás  ======//
 void setup() {
   Serial.begin(9600);
-  pinMode(Livingroom_Lamp_1_PIN, OUTPUT);
-  pinMode(Livingroom_Lamp_2_PIN, OUTPUT);
-  pinMode(Livingroom_Cooler_PIN, OUTPUT);
-  pinMode(Livingroom_Heater_PIN, OUTPUT);
-  pinMode(Livingroom_Heater_PIN, OUTPUT);
-  pinMode(Livingroom_Heater_PIN, OUTPUT);
+  pinMode(Frontyard_Sprinkler_PIN, OUTPUT);
+  pinMode(Livingroom_Shades_1_PIN, OUTPUT);
+  pinMode(Livingroom_Shades_2_PIN, OUTPUT);
+  pinMode(Livingroom_Shades_3_PIN, OUTPUT);
+  pinMode(Livingroom_Shades_4_PIN, OUTPUT);
+  pinMode(Frontyard_Doorlock_PIN, OUTPUT);
   setup_wifi();
   client.setServer(mqtt_server,mqttPort);
   client.setCallback(callback);

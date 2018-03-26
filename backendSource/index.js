@@ -142,7 +142,7 @@ let gws=undefined
           if (gws!==undefined) {
             gws.send(JSON.stringify(values));
           }
-          //console.log("Lámpák felkapcsolva");
+          console.log("Lámpák felkapcsolva");
         }
         if (Neumann_SmartRoom_Livingroom_Ambient == 1&&Neumann_SmartRoom_Frontyard_Ambient == 0 && Neumann_SmartRoom_Livingroom_Motion==0) {
           setTimeout(function(){
@@ -163,6 +163,7 @@ let gws=undefined
           }
           if (gws!==undefined) {
             gws.send(JSON.stringify(values));
+              console.log("Lámpák lekapcsolva");
           }
         }
       }
@@ -181,7 +182,7 @@ let gws=undefined
     //unsub a kiválasztott csatornákról
 
     function Autoshades() {
-      if(manualshades==false){
+      if(manualshades==false&&manuallamp==false){
         if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 1) {
           client.publish("Neumann/SmartRoom/Livingroom/Shades", "0");
           client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
@@ -326,9 +327,9 @@ let gws=undefined
     if(manualsprinkler==false){
       if (Neumann_SmartRoom_Frontyard_Grass == 1) {
         client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "0");
-        //clearIntervalforreID();
+        clearIntervalforreID();
         //console.log("locsolás off");
-        client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "0");
+        //client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "0");
         var values={
           "topic":"Neumann/SmartRoom/Frontyard/Sprinkler", 
           "message":"0"
@@ -341,7 +342,7 @@ let gws=undefined
       if (Neumann_SmartRoom_Frontyard_Grass == 0) {
         //client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
         //console.log("locsolás on");
-        client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
+        //client.publish("Neumann/SmartRoom/Frontyard/Sprinkler", "1");
         var values={
           "topic":"Neumann/SmartRoom/Frontyard/Sprinkler", 
           "message":"1"
@@ -349,7 +350,7 @@ let gws=undefined
         if (gws!==undefined) {
           gws.send(JSON.stringify(values));
         }
-        //setIntervalforreID();
+        setIntervalforreID();
       }
     }
     }
@@ -599,6 +600,7 @@ wss.on('connection', function connection(ws) {
 
           case "Neumann/SmartRoom/Livingroom/Cooler":
             Neumann_SmartRoom_Livingroom_Cooler=parseInt(res[1]);
+                console.log(Neumann_SmartRoom_Livingroom_Cooler+" cooler értéke");
             if (Neumann_SmartRoom_Livingroom_Heater==0) {
               client.publish(res[0],res[1]);
               values={
@@ -609,10 +611,10 @@ wss.on('connection', function connection(ws) {
                 gws.send(JSON.stringify(values));
               }
             }
-            else{
+            if (Neumann_SmartRoom_Livingroom_Heater==1){
               //console.log("hűtés on != fűtés");
               values={
-                "topic":"Neumann/SmartRoom/Livingroom/Heater", 
+                "topic":"Neumann/SmartRoom/Livingroom/Cooler", 
                 "message":"0"
               }
               if (gws!==undefined) {
@@ -734,13 +736,14 @@ wss.on('connection', function connection(ws) {
 
         case "Neumann/SmartRoom/Livingroom/Heater":
          Neumann_SmartRoom_Livingroom_Heater=parseInt(res[1]);
+                console.log(Neumann_SmartRoom_Livingroom_Heater+" Heater értéke");
         if (Neumann_SmartRoom_Livingroom_Cooler==0) {
           client.publish(res[0],res[1]);
           }
         if(Neumann_SmartRoom_Livingroom_Cooler==1){
           console.log("hűtés on, !=fűtés");
           values={
-            "topic":"Neumann/SmartRoom/Livingroom/Cooler", 
+            "topic":"Neumann/SmartRoom/Livingroom/Heater", 
             "message":"0"
           }
           if (gws!==undefined) {
@@ -802,7 +805,7 @@ client.on('connect', function () {
 
 client.on('message', function (topic, message) {
     //console.log(message);     
-    console.log(topic.toString()+" "+message.toString());
+    //console.log(topic.toString()+" "+message.toString());
     var values={
       "topic":topic.toString(), 
       "message":message.toString()

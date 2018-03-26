@@ -8,11 +8,11 @@
 
 //======  GPIO  ======//
 //#define Livingroom_TempHum_PIN 16 // D0 16
+#define Frontyard_Doorlock_PIN 2  // D0 16
 #define Livingroom_Ambient_PIN 5  // D1 5
 #define Livingroom_Smoke_PIN 4    // D2 4
 #define Livingroom_Motion_PIN 0   // D3 0
 #define Livingroom_TempHum_PIN 2  // D4 2
-#define Frontyard_Doorlock_PIN 2  // D0 16
 #define Frontyard_TempHum_PIN 14  // D5 14 
 #define Frontyard_Ambient_PIN 12   // D6 12
 #define Frontyard_Motion_PIN 13   // D7 13
@@ -130,6 +130,7 @@ void servo_Update(int destination, int PIN_Number) {
   if (currentMilis - servo_Milis >= servo_Interval) {
       servoMove(destination,PIN_Number);
     servo_Milis += servo_Interval;
+    servo.detach();
   }
 }
 
@@ -139,17 +140,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
   String strTopic = String((char*)topic);
   msg = (char*)payload;
 
-  if (strTopic == "Config_Intervals") {
-    /*Tömböt nem tudok mqtt-n küldeni csak kódolással és dekódolással
-      Adat folyam falytája?
-      Livingroom_Temperature_Interval;
-      Livingroom_Humidity_Interval;
-      Livingroom_Ambient_Interval;
-      Livingroom_Smoke_Interval;
-      Livingroom_Motion_Interval;*/
-  }
-  else if(strTopic == "Neumann/SmartRoom/Frontyard/Door"){
+  if(strTopic == "Neumann/SmartRoom/Frontyard/Door"){
+    Serial.println(msg[0]);
       if(msg[0]=='0'){
+              
               Frontyard_Door = 15;
         }
         else if( msg[0]=='1'){
@@ -172,6 +166,8 @@ void reconnect() {
     clientId += String(random(0xffff), HEX);
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
+      client.subscribe("Neumann/SmartRoom/Frontyard/Door");   
+      client.loop();
     }
     else {
       Serial.print("failed, rc=");

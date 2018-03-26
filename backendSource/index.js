@@ -469,7 +469,7 @@ let gws=undefined
         client.publish("Neumann/SmartRoom/Livingroom/Window", "0");
         client.publish("Neumann/SmartRoom/Livingroom/Heater", "0");
         client.publish("Neumann/SmartRoom/Livingroom/Cooler", "1");
-        client.publish("Neumann/SmartRoom/Frontyard/Doorlock", "0");
+        client.publish("Neumann/SmartRoom/Frontyard/Doorl", "0");
         client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "0");
         client.publish("Neumann/SmartRoom/Livingroom/Lamp/2", "0");
         client.publish("Neumann/SmartRoom/Livingroom/Mood/R", "0");
@@ -501,7 +501,7 @@ let gws=undefined
         }
 
         values={
-          "topic":"Neumann/SmartRoom/Frontyard/Doorlock", 
+          "topic":"Neumann/SmartRoom/Frontyard/Door", 
           "message":"0"
         }
         if (gws!==undefined) {
@@ -548,8 +548,8 @@ let gws=undefined
   setInterval(Autoshades,10000);
   setInterval(Autotemp,10000);
   setInterval(Autosprinkler,10000);
-  setInterval(Autoriaszto,10000);
-  setInterval(tavollet,10000);
+  //setInterval(Autoriaszto,10000);
+  //setInterval(tavollet,10000);
   //setInterval(Autofust,10000);
     
 
@@ -717,7 +717,7 @@ wss.on('connection', function connection(ws) {
             client.publish("Neumann/SmartRoom/Livingroom/Mood/B", BLUE.toString());
             break;
 
-        case "Neumann/SmartRoom/Frontyard/Doorlock":
+        case "Neumann/SmartRoom/Frontyard/Door":
             Neumann_SmartRoom_Frontyard_Doorlock=parseInt(res[1]);
             client.publish(res[0], res[1]);
             break;

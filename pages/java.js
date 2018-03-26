@@ -1,6 +1,6 @@
 $( document ).ready(function() {
 
-	var SmartRoomSocket = new WebSocket("ws://192.168.10.67:8080");
+	var SmartRoomSocket = new WebSocket("ws://raspberrypi.local:8080/");
 	SmartRoomSocket.onopen = function (event) {
 	SmartRoomSocket.onmessage = function (event) {
 		console.log(event.data);
@@ -17,7 +17,8 @@ $( document ).ready(function() {
 				$("#parabent").text(JSONdata["message"]);
 			break;
 			case "Neumann/SmartRoom/Frontyard/Temperature":
-				$("#homkint").text(JSONdata["message"]);
+                $("#futes").text(Math.floor(JSONdata["message"]));
+                $("#homkint").text(JSONdata["message"]);
 			break;
 			case "Neumann/SmartRoom/Frontyard/Humidity":
 				$("#parakint").text(JSONdata["message"]);
@@ -61,18 +62,100 @@ $( document ).ready(function() {
 				}else{
 					$("#move").attr("src","move.png");
 				}
-			break;
+			     break;
                 
             case "Neumann/SmartRoom/Livingroom/Lamp/1":
-				if(JSONdata["message"]==1)
-				{
-    document.getElementById("Neumann/SmartRoom/Livingroom/Lamp/1; ").checked = true;
-				}else{
-    document.getElementById("Neumann/SmartRoom/Livingroom/Lamp/1; ").checked = false;
+                if(JSONdata["message"]==true){
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Lamp/1").checked = true;
 				}
-			break;
-                
-                
+                else{
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Lamp/1").checked = false;
+				}
+            case "Neumann/SmartRoom/Livingroom/Lamp/2":
+				if(JSONdata["message"]==true){
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Lamp/2").checked = true;
+				}
+                else{
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Lamp/2").checked = false;
+				}
+			     break;
+            case "Neumann/SmartRoom/Livingroom/Heater":
+				if(JSONdata["message"]==true){
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Heater").checked = true;
+				}
+                else{
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Heater").checked = false;
+				}
+			     break;
+            case "Neumann/SmartRoom/Livingroom/Cooler":
+				if(JSONdata["message"]==true){
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Cooler").checked = true;
+				}
+                else{
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Cooler").checked = false;
+				}
+			     break;
+            case "Neumann/SmartRoom/Livingroom/Window":
+				if(JSONdata["message"]==true){
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Window").checked = true;
+				}
+                else{
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Window").checked = false;
+				}
+			     break;  
+            case "Neumann/SmartRoom/Livingroom/Sprinkler":
+				if(JSONdata["message"]==true){
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Sprinkler").checked = true;
+				}
+                else{
+                    document.getElementById("Neumann/SmartRoom/Livingroom/Sprinkler").checked = false;
+				}
+			     break;
+            case "Neumann/SmartRoom/Livingroom/Shades":
+				if(JSONdata["message"]>=0 && JSONdata["message"]<=100){
+                    switch(JSONdata["message"]){
+                        case 0:
+                                document.getElementById("fent").checked = true;
+                                document.getElementById("redbelul").style = "height: 0px";
+                            break;
+                        case 50:
+                                document.getElementById("kozep").checked = true;
+                                document.getElementById("redbelul").style = "height: 75px";
+                            break;
+                        case 100:
+                                document.getElementById("lent").checked = true;
+                                document.getElementById("redbelul").style = "height: 145px";
+                            break;
+                        default:
+                            break;
+                    }
+				}
+                break;
+            case "Neumann/SmartRoom/Livingroom/Mood":
+                    //0 kikapcsolva, 1 piros, 2 zöld, 3 kék
+                if(JSONdata["message"]>=0 && JSONdata["message"]<=3){
+                    switch(JSONdata["message"]){
+                        case 0:
+                                document.getElementById("none").checked = true;
+                                document.getElementById("hangulat").src="nincs.png";
+                            break;
+                        case 1:
+                                document.getElementById("redBox").checked = true;
+                                document.getElementById("hangulat").src="piros.png";
+                            break;
+                        case 2:
+                                document.getElementById("greenBox").checked = true;
+                                document.getElementById("hangulat").src="zold.png";
+                            break;
+                        case 3:
+                                document.getElementById("blueBox").checked = true;
+                                document.getElementById("hangulat").src="kek.png";
+                            break;
+                        default:
+                            break;
+                  }
+                }
+                break;
                 
                 
 			default:

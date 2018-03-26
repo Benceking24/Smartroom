@@ -13,12 +13,14 @@
 			<td class="keret"  rowspan="2">
 				
 					<label class="container2">Lámpa &#10112;
-						<input type="checkbox" class="switch" id=Neumann/SmartRoom/Livingroom/Lamp/1; value="Neumann/SmartRoom/Livingroom/Lamp/1;">
+						<input type="checkbox" class="switch" id="Neumann/SmartRoom/Livingroom/Lamp/1" value="Neumann/SmartRoom/Livingroom/Lamp/1;">
 						<span class="checkmark2"></span>
 					</label>
 					
 					<label class="container2">Lámpa &#10113;
-						<input type="checkbox" class="switch" value="Neumann/SmartRoom/Livingroom/Lamp/2;">
+						<input type="checkbox" class="switch" 
+                               id="Neumann/SmartRoom/Livingroom/Lamp/2"
+                               value="Neumann/SmartRoom/Livingroom/Lamp/2;">
 						<span class="checkmark2"></span>
 					</label>
 					
@@ -137,24 +139,24 @@
 				
 				<img id="hangulat" src="nincs.png"  alt="világítás">
 				<form id="hangform" name="hangform" >
-				<label class="container">Kék
-					<input type="radio" name="color" id="blue"value="kek">
-					<span class="checkmark"></span>
-				</label>
-				
 				<label class="container">Piros
-					<input type="radio" name="color" id="red" value="piros" >
-					<span class="checkmark"></span>
+					<input type="radio" name="color" id="red"value="piros">
+					<span class="checkmark" id="redBox"></span>
 				</label>
 				
-				<label class="container">Zöld
-					<input type="radio" name="color" id="green" value="zold">
-					<span class="checkmark"></span>
+				<label class="container">Green
+					<input type="radio" name="color" id="green" value="zold" >
+					<span class="checkmark" id="greenBox"></span>
+				</label>
+				
+				<label class="container">Blue
+					<input type="radio" name="color" id="blue" value="kek">
+					<span class="checkmark" id="blueBox"></span>
 				</label>
 				
 				<label class="container">Nincs
 					<input type="radio" name="color" id="none" value="nincs" checked>
-					<span class="checkmark"></span>
+					<span class="checkmark" id="none"></span>
 				</label>
 				</form>
 			</td>

@@ -1,9 +1,9 @@
 #include<ESP8266WiFi.h>
 #include<PubSubClient.h>
 #include<DHT.h>
+#include<math.h>
 #define LivingroomDHTTYPE DHT11
 #define FrontyardDHTTYPE DHT22
-
 //======  GPIO  ======//
 //#define Livingroom_TempHum_PIN 16 // D0 16
 #define Livingroom_Ambient_PIN 5  // D1 5
@@ -160,7 +160,7 @@ void reconnect() {
 //======  Beltéri szenzorok kiolvasása  ======//
 void Livingroom_Temperature_Read() {
   Livingroom_Temperature = Livingroom_dht.readTemperature();
-  client.publish("Neumann/SmartRoom/Livingroom/Temperature", String(Livingroom_Temperature).c_str(), true);
+  client.publish("Neumann/SmartRoom/Livingroom/Temperature", String((float)round(Livingroom_Temperature*10)/10).c_str(), true);
 
   char output[16];
   itoa(Livingroom_Temperature, output, 10);
@@ -170,7 +170,8 @@ void Livingroom_Temperature_Read() {
 
 void Livingroom_Humidity_Read() {
   Livingroom_Humidity = Livingroom_dht.readHumidity();
-  client.publish("Neumann/SmartRoom/Livingroom/Humidity", String(Livingroom_Humidity).c_str(), true );
+  int humidity = round(Livingroom_Humidity);
+  client.publish("Neumann/SmartRoom/Livingroom/Humidity", String(humidity).c_str(), true );
 
   char output[16];
   itoa(Livingroom_Humidity, output, 10);

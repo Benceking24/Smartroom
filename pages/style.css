@@ -138,6 +138,7 @@ table{
 	vertical-align: top;
 	text-align: right;
 	height: 20vh;
+    width: auto;
 }
 .keret{
 	border: 2px solid;

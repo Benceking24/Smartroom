@@ -4,6 +4,8 @@
 #include<math.h>
 #define LivingroomDHTTYPE DHT11
 #define FrontyardDHTTYPE DHT22
+#include <Servo.h>
+
 //======  GPIO  ======//
 //#define Livingroom_TempHum_PIN 16 // D0 16
 #define Livingroom_Ambient_PIN 5  // D1 5
@@ -14,7 +16,7 @@
 #define Frontyard_TempHum_PIN 14  // D5 14 
 #define Frontyard_Ambient_PIN 12   // D6 12
 #define Frontyard_Motion_PIN 13   // D7 13
-#define Frontyard_Dumpster_PIN 15 // D8 15
+#define Frontyard_Door_PIN 15 // D8 15
 // RX 3
 // TX 1
 #define Frontyard_Grass_PIN 9     // SD2 9
@@ -46,7 +48,10 @@ bool Frontyard_Ambient;
 bool Frontyard_Motion;
 bool Frontyard_Grass;
 bool Frontyard_Rain;
+int Frontyard_Door;
 
+unsigned long servo_Milis = 0;
+int servo_Interval = 1000;
 int Frontyard_Temperature_Interval = 10000;
 int Frontyard_Humidity_Interval = 8000;
 int Frontyard_Ambient_Interval = 5000;
@@ -79,6 +84,7 @@ DHT Livingroom_dht(Livingroom_TempHum_PIN, LivingroomDHTTYPE);
 DHT Frontyard_dht(Frontyard_TempHum_PIN, FrontyardDHTTYPE);
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
+Servo servo;
 unsigned long currentMilis = 0;
 long lastMsg = 0;
 char* msg;
@@ -115,6 +121,18 @@ void Debug(char* sensorName, char* sensorValue) {
   }
 }
 
+void servoMove (int destination, int PIN_Number){
+  servo.attach(PIN_Number);
+  servo.write(destination);
+}
+
+void servo_Update(int destination, int PIN_Number) {
+  if (currentMilis - servo_Milis >= servo_Interval) {
+      servoMove(destination,PIN_Number);
+    servo_Milis += servo_Interval;
+  }
+}
+
 //======  MQTT Callback  ======//
 void callback(char* topic, byte* payload, unsigned int length) {
   payload[length] = '\0';
@@ -129,6 +147,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
       Livingroom_Ambient_Interval;
       Livingroom_Smoke_Interval;
       Livingroom_Motion_Interval;*/
+  }
+  else if(strTopic == "Neumann/SmartRoom/Frontyard/Door"){
+      if(msg[0]=='0'){
+              Frontyard_Door = 15;
+        }
+        else if( msg[0]=='1'){
+            Frontyard_Door=165;
+          }
+        servo_Update(Frontyard_Door,Frontyard_Door_PIN);
   }
   else {
     Serial.println("Unknown topic: ");
@@ -415,7 +442,7 @@ void setup() {
   pinMode(Frontyard_TempHum_PIN, INPUT);
   pinMode(Frontyard_Ambient_PIN, INPUT);
   pinMode(Frontyard_Motion_PIN, INPUT);
-  pinMode(Frontyard_Dumpster_PIN, INPUT);
+  pinMode(Frontyard_Door_PIN, INPUT);
   pinMode(Frontyard_Grass_PIN, INPUT);
   pinMode(Frontyard_Rain_PIN, INPUT);
   setup_wifi();

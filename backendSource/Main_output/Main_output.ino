@@ -14,7 +14,7 @@
 #define Livingroom_Mood_B_PIN 15// D8 15
 // RX 3
 // TX 1
-// SD2 9
+#define Frontyard_Sprinkler_PIN 10// SD2 9
 // SD3 10
 
 //======  Nappali változók  ======//  
@@ -30,6 +30,9 @@ int Livingroom_Mood_B;
 unsigned long currentMilis = 0;
 unsigned long servo_Milis = 0;
 int servo_Interval = 1000;
+
+bool Frontyard_Sprinkler;
+
 
 //======  Konfiguráció  ======//
 //const char* ssid = "kibu-guest";
@@ -111,14 +114,14 @@ void servo_Update(int destination, int L_PIN_Number, int R_PIN_Number) {
 
 //======  MQTT Callback  ======//
 void callback(char* topic, byte* payload, unsigned int length) {
-   /*DEBUG MODE
+   //DEBUG MODE
     Serial.print("Message arrived [");
     Serial.print(topic);
     Serial.print("] ");
     for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
     }
-    Serial.println();*/
+    Serial.println();
 
   payload[length] = '\0';
   String strTopic = String((char*)topic);
@@ -164,6 +167,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
       Value_Change(Livingroom_Mood_B_PIN, msg);
       Livingroom_Mood_B = msg[0]-'0';
   }
+  else if(strTopic == "Neumann/SmartRoom/Frontyard/Sprinkler"){
+      if(msg[0]=='0'){msg[0]='1';}else if(msg[0]=='1'){msg[0]='0';}
+      Frontyard_Sprinkler = msg[0];
+      Bool_Toggle(Frontyard_Sprinkler_PIN, msg);
+  }
   else{
     Serial.println("Unknown topic: ");
     Serial.print(strTopic);
@@ -195,6 +203,8 @@ void reconnect() {
       client.subscribe("Neumann/SmartRoom/Livingroom/Mood/G");
       client.loop();
       client.subscribe("Neumann/SmartRoom/Livingroom/Mood/B");
+      client.loop();
+      client.subscribe("Neumann/SmartRoom/Frontyard/Sprinkler");    
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -206,6 +216,8 @@ void reconnect() {
 //======  Fő futás  ======//
 void setup() {
   Serial.begin(9600);
+  Serial.println("MAIN OUTPUT");
+  pinMode(Frontyard_Sprinkler_PIN, OUTPUT);
   pinMode(Livingroom_Lamp_1_PIN, OUTPUT);
   pinMode(Livingroom_Lamp_2_PIN, OUTPUT);
   pinMode(Livingroom_Cooler_PIN, OUTPUT);

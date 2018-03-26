@@ -406,6 +406,7 @@ void Frontyard_Rain_Update() {
 //======  Fő futás  ======//
 void setup() {
   Serial.begin(9600);
+  Serial.println("MAIN INPUT");
   pinMode(Livingroom_TempHum_PIN, INPUT);
   pinMode(Livingroom_Ambient_PIN, INPUT);
   pinMode(Livingroom_Smoke_PIN, INPUT);

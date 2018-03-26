@@ -1,11 +1,11 @@
 $( document ).ready(function() {
 
-	var SmartRoomSocket = new WebSocket("ws://raspberrypi.local:8080/");
+	var SmartRoomSocket = new WebSocket("ws://192.168.10.100:8080/");
 	SmartRoomSocket.onopen = function (event) {
 	SmartRoomSocket.onmessage = function (event) {
-		console.log(event.data);
+		//console.log(event.data);
 		var JSONdata = JSON.parse(event.data);
-		console.log(JSONdata)
+		//console.log(JSONdata)
 		switch(JSONdata["topic"])
 		{
 			case "Neumann/SmartRoom/Livingroom/Temperature":
@@ -103,12 +103,12 @@ $( document ).ready(function() {
                     document.getElementById("Neumann/SmartRoom/Livingroom/Window").checked = false;
 				}
 			     break;  
-            case "Neumann/SmartRoom/Livingroom/Sprinkler":
+            case "Neumann/SmartRoom/Frontyard/Sprinkler":
 				if(JSONdata["message"]==true){
-                    document.getElementById("Neumann/SmartRoom/Livingroom/Sprinkler").checked = true;
+                    document.getElementById("Neumann/SmartRoom/Frontyard/Sprinkler").checked = true;
 				}
                 else{
-                    document.getElementById("Neumann/SmartRoom/Livingroom/Sprinkler").checked = false;
+                    document.getElementById("Neumann/SmartRoom/Frontyard/Sprinkler").checked = false;
 				}
 			     break;
             case "Neumann/SmartRoom/Livingroom/Shades":
@@ -159,7 +159,7 @@ $( document ).ready(function() {
                 
                 
 			default:
-				console.log(event.data)
+				//console.log(event.data)
 			break;
 			
 			

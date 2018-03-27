@@ -7,8 +7,7 @@
 #include <Servo.h>
 
 //======  GPIO  ======//
-//#define Livingroom_TempHum_PIN 16 // D0 16
-#define Frontyard_Doorlock_PIN 2  // D0 16
+//#define Frontyard_Doorlock_PIN 2  // D0 16
 #define Livingroom_Ambient_PIN 5  // D1 5
 #define Livingroom_Smoke_PIN 4    // D2 4
 #define Livingroom_Motion_PIN 0   // D3 0
@@ -67,14 +66,9 @@ unsigned long Frontyard_Grass_Milis = 0;
 unsigned long Frontyard_Rain_Milis = 0;
 
 //======  Konfiguráció  ======//
-//const char* ssid = "kibu-guest";
-const char* ssid = "kibu";
-//const char* ssid = "SmartRoom";
-//const char* password = "kiburaday30";
-const char* password = "acdcabbaedda2";
-//const char* password = "almakamion";
-//const char* mqtt_server = "192.168.80.1";
-const char* mqtt_server = "iot.office.kibu.hu";
+const char* ssid = "TheSmartRoom";
+const char* password = "almakamion";
+const char* mqtt_server = "192.168.10.1";
 const int mqttPort = 1883;
 const char* mqttUser = "";
 const char* mqttPassword = "";
@@ -434,7 +428,7 @@ void setup() {
   pinMode(Livingroom_Ambient_PIN, INPUT);
   pinMode(Livingroom_Smoke_PIN, INPUT);
   pinMode(Livingroom_Motion_PIN, INPUT);
-  pinMode(Frontyard_Doorlock_PIN, INPUT);
+  //pinMode(Frontyard_Doorlock_PIN, INPUT);
   pinMode(Frontyard_TempHum_PIN, INPUT);
   pinMode(Frontyard_Ambient_PIN, INPUT);
   pinMode(Frontyard_Motion_PIN, INPUT);

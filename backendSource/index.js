@@ -123,6 +123,12 @@ let gws=undefined
     },60000)
 
     function Autolamp() {
+        console.log("tesztertekek motion");
+        console.log("manuallamp: " + manuallamp);
+        console.log("fust: " + Neumann_SmartRoom_Livingroom_Smoke);
+        console.log("livingambient: " + Neumann_SmartRoom_Livingroom_Ambient);
+        console.log("frontyardambient: " + Neumann_SmartRoom_Frontyard_Ambient);
+        console.log("livingmotion: " + Neumann_SmartRoom_Livingroom_Motion);
       if (manuallamp==false&&Neumann_SmartRoom_Livingroom_Smoke==0) {
         if (Neumann_SmartRoom_Livingroom_Ambient == 0&&Neumann_SmartRoom_Frontyard_Ambient == 0 && Neumann_SmartRoom_Livingroom_Motion==1) {
           client.publish("Neumann/SmartRoom/Livingroom/Lamp/1", "1");
